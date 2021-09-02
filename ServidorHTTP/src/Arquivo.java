@@ -10,8 +10,6 @@ import java.io.PrintWriter;
 //                                                                                                                *
 // Nome da Classe: Arquivo                                                                                        *
 //                                                                                                                *
-// Atributos: Se o Arquivo Existe (boolean), Tamanho em Caracteres ou Bytes (int), Tipo do Arquivo (código MIME)  *
-//                                                                                                                *
 // Métodos: Lê arquivo texto (sequência de caracteres), Lê arquivo binário (sequência de bytes), escreve          *
 //          arquivo texto                                                                                         *
 //                                                                                                                *
@@ -29,6 +27,17 @@ public class Arquivo {
 		return ((int)Arquivo.length());
 	}
 	
+	//*****************************************************************************************************************
+	// Nome do Método: LeTexto                                                                                        *
+    //	                                                                                                              *
+	// Funcao: lê um arquivo texto (sequência de caracteres)                                                          *
+	//                                                                                                                *
+	// Entrada: string com o nome do caminho e string com o nome do arquivo                                           *
+	//                                                                                                                *
+	// Saida (string): conteúdo do arquivo lido (se ocorrer erro na leitura, retorna uma string vazia                 *
+    //	                                                                                                              *
+	//*****************************************************************************************************************
+	//
 	String LeTexto(String Caminho, String NomeArquivo) {
 		File Arquivo = new File(Caminho + NomeArquivo);
 		String Arq = "";
@@ -40,11 +49,22 @@ public class Arquivo {
 				Arq = Arq + st + "\n";
 			}
 		} catch (IOException e) {
-			return("erro");
+			return("");
 		}
 		return(Arq);
 	}
 	
+	//*****************************************************************************************************************
+	// Nome do Método: LeByte                                                                                         *
+    //	                                                                                                              *
+	// Funcao: lê um arquivo binário (sequência de bytes)                                                             *
+	//                                                                                                                *
+	// Entrada: string com o nome do caminho e string com o nome do arquivo                                           *
+	//                                                                                                                *
+	// Saida (array de bytes): conteúdo do arquivo lido (se ocorrer erro na leitura, retorna um array vazio           *
+    //	                                                                                                              *
+	//*****************************************************************************************************************
+	//
 	byte[] LeByte(String Caminho, String NomeArquivo) throws IOException {
 		File Arquivo = new File(Caminho + NomeArquivo);
 		FileInputStream ArquivoLido = null;
@@ -63,17 +83,17 @@ public class Arquivo {
 	
 	
 	//*****************************************************************************************************************
-	// Nome do Método: EscreveArqTxt()                                                                                *
+	// Nome do Método: EscTxt                                                                                         *
     //	                                                                                                              *
 	// Funcao: escreve um arquivo texto                                                                               *
 	//                                                                                                                *
-	// Entrada: string com o nome do caminho e do arquivo e texto a ser escrito no arquivo                            *
+	// Entrada: string com o nome do caminho, string com o nome do arquivo e string com o texto a ser escrito         *
 	//                                                                                                                *
-	// Saida: = 1 leu arquivo / = 0 falha ao ler o arquivo                                                            *
+	// Saida (boolean): true: escreveu o arquivo / false: falha ao escrever o arquivo                                 *
     //	                                                                                                              *
 	//*****************************************************************************************************************
 	//
-	public static boolean EscreveArqTxt(String Caminho, String NomeArquivo, String Texto, boolean Verbose) {
+	public static boolean EscTxt(String Caminho, String NomeArquivo, String Texto, boolean Verbose) {
 
 	try {
 		PrintWriter out = new PrintWriter(new FileWriter(Caminho + NomeArquivo));

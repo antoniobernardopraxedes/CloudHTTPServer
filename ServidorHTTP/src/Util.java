@@ -336,35 +336,35 @@ public class Util {
 		return (Num);
 	}
 	
-	//*****************************************************************************************************************
-	// Nome da Rotina: ByteLow                                                                                        *
-	//                                                                                                                *
-	// Funcao: obtem o byte menos significativo de um valor inteiro                                                   *
-	// Entrada: valor inteiro                                                                                         *
-	// Saida: byte menos significativo                                                                                *
-	//                                                                                                                *
-	//*****************************************************************************************************************
-	//
-	static int ByteLow(int valor) {
-		int BH = valor / 256;
-		int BL = valor - 256*BH;
-		return ((byte)BL);
-	}
-	
-	
-	//*****************************************************************************************************************
-	// Nome da Rotina: ByteHigh                                                                                       *
-	//                                                                                                                *
-	// Funcao: obtem o byte mais significativo de um valor inteiro                                                    *
-	// Entrada: valor inteiro                                                                                         *
-	// Saida: byte mais significativo                                                                                 *
-	//                                                                                                                *
-	//*****************************************************************************************************************
-	//
-	static int ByteHigh(int valor) {
-		int BH = valor / 256;
-		return ((byte)BH);
-	}
+	   //*****************************************************************************************************************
+    // Nome da Rotina: ByteLow                                                                                        *
+    //                                                                                                                *
+    // Funcao: obtem o byte menos significativo de um valor inteiro                                                   *
+    // Entrada: valor inteiro                                                                                         *
+    // Saida: byte menos significativo                                                                                *
+    //                                                                                                                *
+    //*****************************************************************************************************************
+    //
+    static byte ByteLow(int valor) {
+        int BH = valor / 256;
+        int BL = valor - 256*BH;
+        return ((byte)BL);
+    }
+
+
+    //*****************************************************************************************************************
+    // Nome da Rotina: ByteHigh                                                                                       *
+    //                                                                                                                *
+    // Funcao: obtem o byte mais significativo de um valor inteiro                                                    *
+    // Entrada: valor inteiro                                                                                         *
+    // Saida: byte mais significativo                                                                                 *
+    //                                                                                                                *
+    //*****************************************************************************************************************
+    //
+    static byte ByteHigh(int valor) {
+        int BH = valor / 256;
+        return ((byte)BH);
+    }
 	
 	
 	//*****************************************************************************************************************

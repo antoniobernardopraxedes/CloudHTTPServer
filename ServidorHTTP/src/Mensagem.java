@@ -1081,7 +1081,7 @@ public class Mensagem {
     //                                                                                                                * 
 	// Nome do Método: EnvArqTxt                                                                                      *
 	//	                                                                                                              *
-	// Funcao: envia para o cliente conectado uma mensagem HTTP lida de um arquivo em caracteres                      *
+	// Funcao: envia para o cliente conectado uma mensagem HTTP lida de um arquivo texto ( sequência de caracteres)   *
 	//                                                                                                                *
 	// Entrada: Socket de conexão, String com o caminho do arquivo (diretório), String com o nome do arquivo,         *
 	//          boolean Verbose (habilita envio de mensagens para o terminal)                                         *
@@ -1097,11 +1097,12 @@ public class Mensagem {
 		try {
 			out = new PrintWriter(connect.getOutputStream());
 			Arquivo Arq = new Arquivo();
-			int TamArquivo = Arq.Tamanho(Caminho, NomeArquivo);
-			String TipoArquivo = Arq.Tipo(NomeArquivo);
-			String DadosArquivo = Arq.LeTexto(Caminho, NomeArquivo);
+			
 			
 			if (Arq.Existe(Caminho, NomeArquivo)) {
+				int TamArquivo = Arq.Tamanho(Caminho, NomeArquivo);
+				String TipoArquivo = Arq.Tipo(NomeArquivo);
+				String DadosArquivo = Arq.LeTexto(Caminho, NomeArquivo);
 				ArquivoLido = true;
 				out.println("HTTP/1.1 200 OK");
 				out.println("Server: Java HTTP Server from PraxServer : 1.0");

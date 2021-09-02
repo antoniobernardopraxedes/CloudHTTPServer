@@ -12,17 +12,17 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.StringTokenizer;
 
-//***************************************************************************************************************************
-//                                                                                                                          *
-//Autor: Antonio Bernardo de Vasconcellos Praxedes                                                                          *
-//                                                                                                                          *  
-//Data: 19/08/2021                                                                                                          *
-//                                                                                                                          *
-//Nome da Classe: HTTPSrvCloud                                                                                              *
-//                                                                                                                          *
-//Funcao: Programa Principal Servidor HTTP para ser instalado no Servidor em Nuvem                                          *
-//                                                                                                                          *
-//***************************************************************************************************************************
+//*********************************************************************************************************************
+//                                                                                                                    *
+//Autor: Antonio Bernardo de Vasconcellos Praxedes                                                                    *
+//                                                                                                                    *  
+//Data: 02/09/2021                                                                                                    *
+//                                                                                                                    *
+//Nome da Classe: HTTPSrvCloud                                                                                        *
+//                                                                                                                    *
+//Funcao: Programa Principal Servidor HTTP para ser instalado no Servidor em Nuvem                                    *
+//                                                                                                                    *
+//*********************************************************************************************************************
 //
 public class ServHTTPMain implements Runnable {
 	
@@ -33,19 +33,19 @@ public class ServHTTPMain implements Runnable {
 	static boolean Verbose = true;
 	static String Caminho = "";
 	static String CaminhoNuvem = "/home/bernardo/Executavel/";
-	static String CaminhoLocal = "/home/antonio/workspace/Cloud/";
+	static String CaminhoLocal = "/home/antonio/Workspace/Recursos/";
 			
 	public ServHTTPMain(Socket c) {
 		connect = c;
 	}
 
-	//***************************************************************************************************************************
-	//                                                                                                                          *
-    // Método Executavel da ClasseHTTPSrvSup                                                                                    *
-	//                                                                                                                          *
-	// Funcao: Servidor HTTP aguarda a conexão do Cliente                                                                       *
-	//                                                                                                                          *
-	//***************************************************************************************************************************
+	//*****************************************************************************************************************
+	//                                                                                                                *
+    // Método Executavel da ClasseHTTPSrvSup                                                                          *
+	//                                                                                                                *
+	// Funcao: Servidor HTTP aguarda a conexão do Cliente                                                             *
+	//                                                                                                                *
+	//*****************************************************************************************************************
 	//
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
