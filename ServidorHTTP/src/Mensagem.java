@@ -8,207 +8,332 @@ import java.net.Socket;
 //                                                                                                                *
 // Autor: Antonio Bernardo de Vasconcellos Praxedes                                                               *
 //                                                                                                                * 
-// Data: 19/08/2021                                                                                               *
+// Data: 03/09/2021                                                                                               *
 //                                                                                                                *
 // Classe: Mensagem                                                                                               *
 //                                                                                                                *
-// Atributos:                                                                                                     *
+// Atributos: variáveis de supervisão e controle                                                                  *
 //                                                                                                                *
-// Métodos: tratamento de mensagens                                                                               *
+// Métodos: montagem de mensagens em formato XML para enviar ao navegador                                         *
 //                                                                                                                *
 //*****************************************************************************************************************
 //
 public class Mensagem {
 
-	static String Msg = "";
-	
-	// Variáveis do Programa
-	static boolean flagFim = false;
-	static int Comando = 1;
-	static String ComRecHTTP;
-	//static boolean verbose;
-	static boolean PrtMsg;
-		
-	static int[] receiveData1 = new int[512];
-	static int[] Med = new int[48];
-	static int[] SD = new int[32];
+	private static String ComRecHTTP;
 
 	// Estados Gerais
-	static int Est24Vcc;
-	static int EstRede;
-	static int EstCom1;
-	static int MdOp;
-	static int MdCom;
-	static int MdCtrl1;
-	static int MdCtrl;
-	static int Carga1;
-	static int Carga2;
-	static int Carga3;
-	static int Carga4;
-	static int HabCom;
-	static int EstadoInversor1;
-	static int EstadoInversor2;
-	static int EstadoCarga3;
-	static int CT2Inv;
-	static int CT1Inv;
-	static int CT3Inv;
-	static int UTR1Com;
-	static int UTR2Com;
-	static int CDBat;
-	static int FonteCC1Ligada;
-	static int FonteCC2Ligada;
+	private static int Est24Vcc;
+	private static int EstRede;
+	private static int EstCom1;
+	private static int MdOp;
+	private static int MdCom;
+	private static int MdCtrl1;
+	private static int MdCtrl;
+	private static int Carga1;
+	private static int Carga2;
+	private static int Carga3;
+	private static int Carga4;
+	private static int HabCom;
+	private static int EstadoInversor1;
+	private static int EstadoInversor2;
+	private static int EstadoCarga3;
+	private static int CT2Inv;
+	private static int CT1Inv;
+	private static int CT3Inv;
+	private static int UTR1Com;
+	private static int UTR2Com;
+	private static int CDBat;
+	private static int FonteCC1Ligada;
+	private static int FonteCC2Ligada;
 	
 	// Medidas Gerais
-	static int Icarga3;       // Corrente Carga 3 (Geladeira)
-	static int VRede;         // Tensão da Rede
-	static int VBat;          // Tensão do Banco de Baterias
-	static int VMBat;         // Tensão Média Estendida do Banco de Baterias
-	static int ICircCC;       // Corrente Total dos Circuitos CC
-	static int WCircCC;       // Potência Total dos Circuitos CC
-	static int ITotCg;        // Corrente Total Consumida pelas Cargas
-	static int WTotCg;        // Potência Total Consumida pelas Cargas
-	static int IFonteCC;      // Corrente de Saída da Fonte CC
-	static int WFonteCC;      // Potência de Saída da Fonte CC
-	static int IBat;          // Corrente de Carga / Descarga do Banco de Baterias
-	static int WBat;          // Potência de Carga / Descarga do Banco de Baterias
-	static int TBat;          // Temperatura do Banco de Baterias
-	static int SDBat;         // Valor de Saude das Baterias
-	static int IFontesCC12;   // Corrente de Saída das Fontes CC1 e CC2
+	private static int Icarga3;       // Corrente Carga 3 (Geladeira)
+	private static int VRede;         // Tensão da Rede
+	private static int VBat;          // Tensão do Banco de Baterias
+	private static int VMBat;         // Tensão Média Estendida do Banco de Baterias
+	private static int ICircCC;       // Corrente Total dos Circuitos CC
+	private static int WCircCC;       // Potência Total dos Circuitos CC
+	private static int ITotCg;        // Corrente Total Consumida pelas Cargas
+	private static int WTotCg;        // Potência Total Consumida pelas Cargas
+	private static int IFonteCC;      // Corrente de Saída da Fonte CC
+	private static int WFonteCC;      // Potência de Saída da Fonte CC
+	private static int IBat;          // Corrente de Carga / Descarga do Banco de Baterias
+	private static int WBat;          // Potência de Carga / Descarga do Banco de Baterias
+	private static int TBat;          // Temperatura do Banco de Baterias
+	private static int SDBat;         // Valor de Saude das Baterias
+	private static int IFontesCC12;   // Corrente de Saída das Fontes CC1 e CC2
 
 	// Estados Água
-	static int CircBoia;
-	static int BoiaCxAzul;
-	static int CircBomba;
-	static int AlRedeBomba;
-	static int BombaLigada;
-	static int CxAzNvBx;
-	static int EdCxAzCheia;
-	static int EstadoCxAz;
+	private	static int CircBoia;
+	private static int BoiaCxAzul;
+	private static int CircBomba;
+	private static int AlRedeBomba;
+	private static int BombaLigada;
+	private static int CxAzNvBx;
+	private static int EdCxAzCheia;
+	private static int EstadoCxAz;
 
 	// Medidas Água
-	static int TmpBmbLig;
-	static int TmpCxAzNvBx;
+	private static int TmpBmbLig;
+	private static int TmpCxAzNvBx;
 
 	// Estados do Inversor 1
-	static int Iv1Lig;
-	static int FalhaIv1;
-	static int SubTensaoInv1;
-	static int SobreTensaoInv1;
-	static int SobreCorrInv1;
-	static int SobreTempDrInv1;
-	static int SobreTempTrInv1;
-	static int DjAbIv1;
-	static int DJEINV1;
+	private static int Iv1Lig;
+	private static int FalhaIv1;
+	private static int SubTensaoInv1;
+	private static int SobreTensaoInv1;
+	private static int SobreCorrInv1;
+	private static int SobreTempDrInv1;
+	private static int SobreTempTrInv1;
+	private static int DjAbIv1;
+	private static int DJEINV1;
 
 	// Estados do Inversor 2
-	static int Iv2Lig;
-	static int FalhaIv2;
-	static int SubTensaoInv2;
-	static int SobreTensaoInv2;
-	static int SobreCorrInv2;
-	static int SobreTempDrInv2;
-	static int SobreTempTrInv2;
-	static int DjAbIv2;
-	static int EstFonteCC;
+	private static int Iv2Lig;
+	private static int FalhaIv2;
+	private static int SubTensaoInv2;
+	private static int SobreTensaoInv2;
+	private static int SobreCorrInv2;
+	private static int SobreTempDrInv2;
+	private static int SobreTempTrInv2;
+	private static int DjAbIv2;
+	private static int EstFonteCC;
 
 	// Medidas da UTR2 - Comunicação com os Controladores de Carga
-	static int VP12;              // Medida 00: 0x3100 - PV array voltage 1
-	static int IS12;              // Medida 01: 0x3101 - PV array current 1
-	static int WS12;              // Medida 02: 0x3102 - PV array power 1
-	static int VBat1;             // Medida 03: 0x3104 - Battery voltage 1
-	static int ISCC1;             // Medida 04: 0x3105 - Battery charging current 1
-	static int WSCC1;             // Medida 05: 0x3106 - Battery charging power 1
-	static int VP34;              // Medida 08: 0x3100 - PV array voltage 2
-	static int IS34;              // Medida 09: 0x3101 - PV array current 2
-	static int WS34;              // Medida 10: 0x3102 - PV array power 2
-	static int VBat2;             // Medida 11: 0x3104 - Battery voltage 2
-	static int ISCC2;             // Medida 12: 0x3105 - Battery charging current 2
-	static int WSCC2;             // Medida 13: 0x3106 - Battery charging power 2 (Med[45])
-	static int SDCC1;             // Valor de Saude do Controlador de Carga 1
-	static int SDCC2;             // Valor de Saude do Controlador de Carga 2
+	private static int VP12;              // Medida 00: 0x3100 - PV array voltage 1
+	private static int IS12;              // Medida 01: 0x3101 - PV array current 1
+	private static int WS12;              // Medida 02: 0x3102 - PV array power 1
+	private static int VBat1;             // Medida 03: 0x3104 - Battery voltage 1
+	private static int ISCC1;             // Medida 04: 0x3105 - Battery charging current 1
+	private static int WSCC1;             // Medida 05: 0x3106 - Battery charging power 1
+	private static int VP34;              // Medida 08: 0x3100 - PV array voltage 2
+	private static int IS34;              // Medida 09: 0x3101 - PV array current 2
+	private static int WS34;              // Medida 10: 0x3102 - PV array power 2
+	private static int VBat2;             // Medida 11: 0x3104 - Battery voltage 2
+	private static int ISCC2;             // Medida 12: 0x3105 - Battery charging current 2
+	private static int WSCC2;             // Medida 13: 0x3106 - Battery charging power 2 (Med[45])
+	private static int SDCC1;             // Valor de Saude do Controlador de Carga 1
+	private static int SDCC2;             // Valor de Saude do Controlador de Carga 2
 	
 	// Medidas da Geração
-	static int ITotGer;           // Corrente Total Gerada
-	static int WTotGer;           // Potência Total Gerada
+	private static int ITotGer;           // Corrente Total Gerada
+	private static int WTotGer;           // Potência Total Gerada
 
 	// Medidas do Inversor 2
-	static int IEIv2;             // Corrente de Entrada do Inversor 2
-	static int WEIv2;             // Potência de Entrada do Inversor 2
-	static int VSIv2;             // Tensão de Saída do Inversor 2
-	static int ISInv2;            // Corrente de Saída do Inversor 2
-	static int WSInv2;            // Potência de Saída do Inversor 2
-	static int TDInv2;            // Temperatura do Driver do Inversor 2
-	static int TTInv2;            // Temperatura do Transformador do Inversor 2
-	static int EfIv2;             // Eficiência do Inversor 2
-	static int SDIv2;             // Saúde do Inversor 2
-	static int EstrIv2;           // Estresse do Inversor 2
+	private static int IEIv2;             // Corrente de Entrada do Inversor 2
+	private static int WEIv2;             // Potência de Entrada do Inversor 2
+	private static int VSIv2;             // Tensão de Saída do Inversor 2
+	private static int ISInv2;            // Corrente de Saída do Inversor 2
+	private static int WSInv2;            // Potência de Saída do Inversor 2
+	private static int TDInv2;            // Temperatura do Driver do Inversor 2
+	private static int TTInv2;            // Temperatura do Transformador do Inversor 2
+	private static int EfIv2;             // Eficiência do Inversor 2
+	private static int SDIv2;             // Saúde do Inversor 2
+	private static int EstrIv2;           // Estresse do Inversor 2
 
 	// Medidas do Inversor 1
-	static int IEIv1;             // Corrente de Entrada do Inversor 1
-	static int WEIv1;             // Potência de Entrada do Inversor 1
-	static int VSIv1;             // Tensão de Saída do Inversor 1
-	static int ISInv1;            // Corrente de Saída do Inversor 1
-	static int WSInv1;            // Potência de Saída do Inversor 1
-	static int TDInv1;            // Temperatura do Driver do Inversor 1
-	static int TTInv1;            // Temperatura do Transformador do Inversor 1
-	static int EfIv1;             // Eficiência do Inversor 1
-	static int SDIv1;             // Saúde do Inversor 1
-	static int EstrIv1;           // Estresse do Inversor 1
+	private static int IEIv1;             // Corrente de Entrada do Inversor 1
+	private static int WEIv1;             // Potência de Entrada do Inversor 1
+	private static int VSIv1;             // Tensão de Saída do Inversor 1
+	private static int ISInv1;            // Corrente de Saída do Inversor 1
+	private static int WSInv1;            // Potência de Saída do Inversor 1
+	private static int TDInv1;            // Temperatura do Driver do Inversor 1
+	private static int TTInv1;            // Temperatura do Transformador do Inversor 1
+	private static int EfIv1;             // Eficiência do Inversor 1
+	private static int SDIv1;             // Saúde do Inversor 1
+	private static int EstrIv1;           // Estresse do Inversor 1
 
-	static int Contador;
-	static int NumReg;
-	static int ContadorCiclos;
+	private static int Hora;
+	private static int Minuto;
+	private static int Segundo;
+	private static int Dia;
+	private static int Mes;
+	private static int Ano;
+	private static int EstComUTR;
+	private static int EstComCC1;
+	private static int EstComCC2;
 	
-	static String SrcRefresh = "";
 	
-	static int Hora;
-	static int Minuto;
-	static int Segundo;
-	static int Dia;
-	static int Mes;
-	static int Ano;
-	static int EstComUTR;
-	static int EstComCC1;
-	static int EstComCC2;
+	public static int getEstCom1() {
+		return EstCom1;
+	}
+	
 		
-	static String EndIP1;
-	static String StrEstCom1;
-	static String StrEstComUTR;
-	static String StrEstComCC1;
-	static String StrEstComCC2;
-	static String StrMdOp;
-	static String StrMdCom;
-	static String StrMdCtrl1;
-	static String StrMdCtrl;
-	static String StrCT2Inv;
-	static String StrCT1Inv;
-	static String StrCT3Inv;
-	static String StrEstCxAzul;
-	static String StrNivCxAzul;
-	static String StrEstAlimBoia;
-	static String StrAlRedeBomba;
-	static String StrIv1Lig;
-	static String StrEstBomba;
-	static String StrEstFonteCC1;
-	static String StrEstFonteCC2;
-	static String StrEstIv2;
-	static String StrEstVSIv2;
-	static String StrEstTDIv2;
-	static String StrEstTTIv2;
-	static String StrEstIv1;
-	static String StrEstVSIv1;
-	static String CorTDIv2;
-	static String CorTTIv2;
-	static String CorTDIv1;
-	static String CorTTIv1;
-	static String StrEstRede;
-	static String StrEstValCg3;
-	static String StrEstValVBat;
-	static String StrEstIBat;
-	static String CorTBat;
-	static String StrSaudeBat;
-	static String StrValVP12;
-	static String StrValVP34;	
+	//*****************************************************************************************************************
+	//                                                                                                                *
+	// Nome da Método: LeEstMedsPayload                                                                               *
+	//                                                                                                                *
+	// Funcao: lê as informações de supervisão lidas do Concentrador em formato binário (protocolo CoAP)              *
+	//         e carrega nas variáveis do programa                                                                    *
+	//                                                                                                                *
+	// Entrada: nao tem                                                                                               *
+	//                                                                                                                *
+	// Saida: nao tem                                                                                                 *
+	//                                                                                                                *
+	//*****************************************************************************************************************
+	//
+	static void LeEstMedsPayload(int[] receiveData1) {
+
+		Hora = receiveData1[21];
+		Minuto = receiveData1[22];
+		Segundo = receiveData1[23];
+		Dia = receiveData1[24];
+		Mes = receiveData1[25];
+		Ano = receiveData1[26];
+        EstComUTR = receiveData1[27];
+        EstComCC1 = receiveData1[28];
+        EstComCC2 = receiveData1[29];
+        EstCom1 = receiveData1[30];     // Estado de Comunicação do Conversor com o Concentrador Arduíno
+		
+		// Le as Entradas Digitais
+		DJEINV1 = receiveData1[37];
+		CircBoia = receiveData1[38];
+		BoiaCxAzul = receiveData1[39];
+		CircBomba = receiveData1[40];
+		AlRedeBomba = receiveData1[41];
+		EstRede = receiveData1[42];
+		MdOp = receiveData1[43];
+		MdCom = receiveData1[44];
+		MdCtrl1 = receiveData1[55];
+		MdCtrl = receiveData1[45];
+		Carga1 = receiveData1[46];
+		Carga2 = receiveData1[47];
+		Carga3 = receiveData1[48];
+		Carga4 = receiveData1[49];
+		HabCom = receiveData1[50];
+		EstadoInversor1 = receiveData1[51];
+		EstadoInversor2 = receiveData1[52];
+		EstadoCarga3 = receiveData1[53];
+		BombaLigada = receiveData1[54];
+	
+		// Le os Alarmes
+		FalhaIv1 = receiveData1[56];
+		SubTensaoInv1 = receiveData1[57];
+		SobreTensaoInv1 = receiveData1[58];
+		SobreTempDrInv1 = receiveData1[59];
+		SobreTempTrInv1 = receiveData1[60];
+		DjAbIv1 = receiveData1[61];
+		FalhaIv2 = receiveData1[62];
+		SubTensaoInv2 = receiveData1[63];
+		SobreTensaoInv2 = receiveData1[64];
+		SobreTempDrInv2 = receiveData1[65];
+		SobreTempTrInv2 = receiveData1[66];
+		DjAbIv2 = receiveData1[67];
+		
+		CDBat = receiveData1[68];
+		CxAzNvBx = receiveData1[69];
+		EdCxAzCheia = receiveData1[70];
+		FonteCC2Ligada = receiveData1[71];
+		EstadoCxAz = receiveData1[72];
+		FonteCC1Ligada = receiveData1[73];
+		
+		SobreCorrInv1 = receiveData1[74];
+		SobreCorrInv2 = receiveData1[75];
+    
+		// Le o estado das saidas digitais
+		int NumSd = 32;
+		int[] SD = new int[NumSd];
+		int k = 112;
+		for (int i = 0; i < NumSd; i++){
+			SD[i] = receiveData1[k];
+			k = k + 1;
+		}
+	
+		// Carrega as variaveis com os valores das saidas digitais da UTR1
+		Iv1Lig = SD[1];
+		CT2Inv = SD[17];
+		CT1Inv = SD[0];
+		CT3Inv = SD[2];
+		Iv2Lig = SD[10];
+		EstFonteCC = SD[16];
+	 
+		// Le as medidas de 1 byte da mensagem recebida
+		EfIv1 = receiveData1[144];  // Eficiência do Inversor 1
+		SDIv1 = receiveData1[145];  // Carrega
+		SDIv2 = receiveData1[146];  // Carrega
+		EfIv2 = receiveData1[147];  // Eficiência do Inversor 2
+		SDCC1 = receiveData1[148];
+		SDCC2 = receiveData1[149];
+		SDBat = receiveData1[150];
+		
+		// Le as Medidas de 2 bytes da mensagem recebida
+		int NumMed = 48;
+		int[] Med = new int[NumMed];
+		k = 160;
+		for (byte i = 0; i < NumMed; i++){
+			Med[i] = Util.DoisBytesInt(receiveData1[k], receiveData1[k + 1]);
+			k = k + 2;
+		}
+		
+		// Carrega as medidas lidas do Concentrador Arduino Mega nas variaveis
+		VBat = Med[0];           // Tensão do Banco de Baterias
+		VMBat = Med[16];         // Tensão Média Estendida do Banco de Baterias
+		VRede = Med[5];          // Tensão da Rede
+		Icarga3 = Med[14];       // Corrente Carga 3 (Geladeira)
+		ICircCC = Med[3];        // Corrente Total dos Circuitos CC
+		IFonteCC = Med[11];      // Corrente de Saída da Fonte CC
+				
+		TmpBmbLig = Med[17];     // Tempo da Bomba Ligada
+		TmpCxAzNvBx = Med[46];   // Tempo da Caixa Azul em Nivel Baixo
+				
+		// Leitura e Cálculo das Medidas referentes à Geração e Consumo
+		VP12 = Med[18];          // 0x3100 - PV array voltage 1
+		IS12 = Med[19];          // 0x3101 - PV array current 1
+		WS12 = Med[20];          // 0x3102 - PV array power 1
+		VBat1 = Med[21];         // 0x3104 - Battery voltage 1
+		ISCC1 = Med[22];         // 0x3105 - Battery charging current 1
+		WSCC1 = Med[23];         // 0x3106 - Battery charging power 1
+		TBat =  Med[24];         // 0x3110 - Battery Temperature 1
+			
+		VP34 = Med[26];          // 0x3100 - PV array voltage 2
+		IS34 = Med[27];          // 0x3101 - PV array current 2
+		WS34 = Med[28];          // 0x3102 - PV array power 2
+		VBat2 = Med[29];         // 0x3104 - Battery voltage 2
+		ISCC2 = Med[30];         // 0x3105 - Battery charging current 2
+		WSCC2 = Med[31];         // 0x3106 - Battery charging power 2 (Med[45])
+				
+		ITotGer = Med[33];       					// Corrente Total Gerada
+		WCircCC = Med[35];       					// Potencia Consumida pelos Circuitos de 24Vcc
+		WFonteCC = Med[36];      					// Potencia Fornecida pela Fonte 24Vcc
+		IBat = Med[37];          					// Corrente de Carga ou Descarga do Banco de Baterias
+		WBat = (VBat * IBat)/100;					// Potência de Carga/Descarga do Banco de Baterias
+		ITotGer = ISCC1 + ISCC2;					// Corrente Total Gerada
+		WTotGer = WSCC1 + WSCC2;					// Potência Total Gerada 
+		ITotCg = IEIv1 + IEIv2 + (ICircCC / 10);	// Corrente Total Consumida pelas Cargas
+		WTotCg =  WEIv1 + WEIv2 + WCircCC;			// Potência Total Consumida pelas Cargas
+				
+		// Leitura e Cálculo das Medidas referentes ao Inversor 1
+		IEIv1 = Med[12];         					// Corrente de Entrada do Inversor 1 (15)
+		WEIv1 = (VBat * IEIv1)/100;					// Potência de Entrada do Inversor 1 (Med[41])
+		VSIv1 = Med[4];          					// Tensão de Saída do Inversor 1
+		ISInv1 = (7*Med[10])/10;   					// Corrente de Saída do Inversor 1 (13)
+		WSInv1 = (VSIv1 * ISInv1)/1000;				// Potencia de Saida do Inversor 1 (Med[42])
+		TDInv1 = Med[8];         					// Temperatura do Driver do Inversor 1 (2)
+		TTInv1 = Med[9];         					// Temperatura do Transformador do Inversor 1 (7)
+		if (WEIv1 > 2000) {
+			EfIv1 = (100 * WSInv1) / WEIv1;			// Eficiência do Inversor 1
+		}
+		else {
+			EfIv1 = 0;
+		}
+				
+		// Leitura e Cálculo das Medidas referentes ao Inversor 2
+		IEIv2 = Med[15];         					// Corrente de Entrada do Inversor 2 (12)
+		WEIv2 = (VBat * IEIv2) / 100;         		// Potencia de Entrada do Inversor 2 (Med[38])
+		VSIv2 = Med[6];          					// Tensão de Saída do Inversor 2
+		ISInv2 = Med[13];        					// Corrente de Saída do Inversor 2 (10)
+		WSInv2 = (VSIv2 * ISInv2) / 1000;       	// Potencia de Saida do Inversor 2 (Med[39])
+		TDInv2 = Med[2];         					// Temperatura do Driver do Inversor 2 (8)
+		TTInv2 = Med[7];         					// Temperatura do Transformador do Inversor 2 (9)
+		if (WEIv2 > 2000) {
+			EfIv2 = (100 * WSInv2) / WEIv2;			// Eficiência do Inversor 2
+		}
+		else {
+			EfIv2 = 0;
+		}
+		
+	} // Fim do Método
 	
 	
 	//**********************************************************************************************************************
@@ -226,6 +351,45 @@ public class Mensagem {
 	//**********************************************************************************************************************
 	//
 	public static String XML01() {
+		
+		String EndIP1;
+		String StrEstCom1;
+		String StrEstComUTR;
+		String StrEstComCC1;
+		String StrEstComCC2;
+		String StrMdOp;
+		String StrMdCom;
+		String StrMdCtrl1;
+		String StrMdCtrl;
+		String StrCT2Inv;
+		String StrCT1Inv;
+		String StrCT3Inv;
+		String StrEstCxAzul;
+		String StrNivCxAzul;
+		String StrEstAlimBoia;
+		String StrAlRedeBomba;
+		String StrIv1Lig;
+		String StrEstBomba;
+		String StrEstFonteCC1;
+		String StrEstFonteCC2;
+		String StrEstIv2;
+		String StrEstVSIv2;
+		String StrEstTDIv2;
+		String StrEstTTIv2;
+		String StrEstIv1;
+		String StrEstVSIv1;
+		String CorTDIv2;
+		String CorTTIv2;
+		String CorTDIv1;
+		String CorTTIv1;
+		String StrEstRede;
+		String StrEstValCg3;
+		String StrEstValVBat;
+		String StrEstIBat;
+		String CorTBat;
+		String StrSaudeBat;
+		String StrValVP12;
+		String StrValVP34;
 		       
 		// Estados de Comunicacao
 		StrEstCom1 = "Falha";
@@ -469,7 +633,7 @@ public class Mensagem {
 		MsgXMLArray[IdNv0][IdNv1][4][0] = "COMCC1";
 		MsgXMLArray[IdNv0][IdNv1][4][1] = StrEstComCC1;
 		MsgXMLArray[IdNv0][IdNv1][5][0] = "COMCC2";
-		MsgXMLArray[IdNv0][IdNv1][5][1] = StrEstComCC1;
+		MsgXMLArray[IdNv0][IdNv1][5][1] = StrEstComCC2;
 		MsgXMLArray[IdNv0][IdNv1][6][0] = "CLK";
 		MsgXMLArray[IdNv0][IdNv1][6][1] = Util.ImpHora(Hora, Minuto, Segundo);
 		MsgXMLArray[IdNv0][IdNv1][7][0] = "DATA";
@@ -838,430 +1002,5 @@ public class Mensagem {
 		return(MsgXML);
 		
 	}// Fim do Método
-
-	
-	//*****************************************************************************************************************
-	//                                                                                                                *
-	// Nome da Método: LeEstMedsPayload                                                                               *
-	//                                                                                                                *
-	// Funcao: lê as informações de supervisão lidas do Concentrador em formato binário (protocolo CoAP)              *
-	//         e carrega nas variáveis do programa (atributos)                                                        *
-	//                                                                                                                *
-	// Entrada: nao tem                                                                                               *
-	//                                                                                                                *
-	// Saida: nao tem                                                                                                 *
-	//                                                                                                                *
-	//*****************************************************************************************************************
-	//
-	static void LeEstMedsPayload() {
-
-		Hora = receiveData1[21];
-		Minuto = receiveData1[22];
-		Segundo = receiveData1[23];
-		Dia = receiveData1[24];
-		Mes = receiveData1[25];
-		Ano = receiveData1[26];
-        EstComUTR = receiveData1[27];
-        EstComCC1 = receiveData1[28];
-        EstComCC2 = receiveData1[29];
-        EstCom1 = receiveData1[30];     // Estado de Comunicação do Conversor com o Concentrador Arduíno
-		
-		// Le as Entradas Digitais
-		DJEINV1 = receiveData1[37];
-		CircBoia = receiveData1[38];
-		BoiaCxAzul = receiveData1[39];
-		CircBomba = receiveData1[40];
-		AlRedeBomba = receiveData1[41];
-		EstRede = receiveData1[42];
-		MdOp = receiveData1[43];
-		MdCom = receiveData1[44];
-		MdCtrl1 = receiveData1[55];
-		MdCtrl = receiveData1[45];
-		Carga1 = receiveData1[46];
-		Carga2 = receiveData1[47];
-		Carga3 = receiveData1[48];
-		Carga4 = receiveData1[49];
-		HabCom = receiveData1[50];
-		EstadoInversor1 = receiveData1[51];
-		EstadoInversor2 = receiveData1[52];
-		EstadoCarga3 = receiveData1[53];
-		BombaLigada = receiveData1[54];
-	
-		// Le os Alarmes
-		FalhaIv1 = receiveData1[56];
-		SubTensaoInv1 = receiveData1[57];
-		SobreTensaoInv1 = receiveData1[58];
-		SobreTempDrInv1 = receiveData1[59];
-		SobreTempTrInv1 = receiveData1[60];
-		DjAbIv1 = receiveData1[61];
-		FalhaIv2 = receiveData1[62];
-		SubTensaoInv2 = receiveData1[63];
-		SobreTensaoInv2 = receiveData1[64];
-		SobreTempDrInv2 = receiveData1[65];
-		SobreTempTrInv2 = receiveData1[66];
-		DjAbIv2 = receiveData1[67];
-		
-		CDBat = receiveData1[68];
-		CxAzNvBx = receiveData1[69];
-		EdCxAzCheia = receiveData1[70];
-		FonteCC2Ligada = receiveData1[71];
-		EstadoCxAz = receiveData1[72];
-		FonteCC1Ligada = receiveData1[73];
-		
-		SobreCorrInv1 = receiveData1[74];
-		SobreCorrInv2 = receiveData1[75];
-    
-		// Le o estado das saidas digitais
-		int k = 112;
-		for (int i = 0; i < 32; i++){
-			SD[i] = receiveData1[k];
-			k = k + 1;
-		}
-	
-		// Carrega as variaveis com os valores das saidas digitais da UTR1
-		Iv1Lig = SD[1];
-		CT2Inv = SD[17];
-		CT1Inv = SD[0];
-		CT3Inv = SD[2];
-		Iv2Lig = SD[10];
-		EstFonteCC = SD[16];
-	 
-		// Le as medidas de 1 byte da mensagem recebida
-		EfIv1 = receiveData1[144];  // Eficiência do Inversor 1
-		SDIv1 = receiveData1[145];  // Carrega
-		SDIv2 = receiveData1[146];  // Carrega
-		EfIv2 = receiveData1[147];  // Eficiência do Inversor 2
-		SDCC1 = receiveData1[148];
-		SDCC2 = receiveData1[149];
-		SDBat = receiveData1[150];
-		
-		// Le as Medidas de 2 bytes da mensagem recebida
-		k = 160;
-		for (byte i = 0; i < 48; i++){
-			Med[i] = Util.DoisBytesInt(receiveData1[k], receiveData1[k + 1]);
-			k = k + 2;
-		}
-		
-		// Carrega as medidas lidas do Concentrador Arduino Mega nas variaveis
-		VBat = Med[0];           // Tensão do Banco de Baterias
-		VMBat = Med[16];         // Tensão Média Estendida do Banco de Baterias
-		VRede = Med[5];          // Tensão da Rede
-		Icarga3 = Med[14];       // Corrente Carga 3 (Geladeira)
-		ICircCC = Med[3];        // Corrente Total dos Circuitos CC
-		IFonteCC = Med[11];      // Corrente de Saída da Fonte CC
-				
-		TmpBmbLig = Med[17];     // Tempo da Bomba Ligada
-		TmpCxAzNvBx = Med[46];   // Tempo da Caixa Azul em Nivel Baixo
-				
-		// Leitura e Cálculo das Medidas referentes à Geração e Consumo
-		VP12 = Med[18];          // 0x3100 - PV array voltage 1
-		IS12 = Med[19];          // 0x3101 - PV array current 1
-		WS12 = Med[20];          // 0x3102 - PV array power 1
-		VBat1 = Med[21];         // 0x3104 - Battery voltage 1
-		ISCC1 = Med[22];         // 0x3105 - Battery charging current 1
-		WSCC1 = Med[23];         // 0x3106 - Battery charging power 1
-		TBat =  Med[24];         // 0x3110 - Battery Temperature 1
-			
-		VP34 = Med[26];          // 0x3100 - PV array voltage 2
-		IS34 = Med[27];          // 0x3101 - PV array current 2
-		WS34 = Med[28];          // 0x3102 - PV array power 2
-		VBat2 = Med[29];         // 0x3104 - Battery voltage 2
-		ISCC2 = Med[30];         // 0x3105 - Battery charging current 2
-		WSCC2 = Med[31];         // 0x3106 - Battery charging power 2 (Med[45])
-				
-		ITotGer = Med[33];       					// Corrente Total Gerada
-		WCircCC = Med[35];       					// Potencia Consumida pelos Circuitos de 24Vcc
-		WFonteCC = Med[36];      					// Potencia Fornecida pela Fonte 24Vcc
-		IBat = Med[37];          					// Corrente de Carga ou Descarga do Banco de Baterias
-		WBat = (VBat * IBat)/100;					// Potência de Carga/Descarga do Banco de Baterias
-		ITotGer = ISCC1 + ISCC2;					// Corrente Total Gerada
-		WTotGer = WSCC1 + WSCC2;					// Potência Total Gerada 
-		ITotCg = IEIv1 + IEIv2 + (ICircCC / 10);	// Corrente Total Consumida pelas Cargas
-		WTotCg =  WEIv1 + WEIv2 + WCircCC;			// Potência Total Consumida pelas Cargas
-				
-		// Leitura e Cálculo das Medidas referentes ao Inversor 1
-		IEIv1 = Med[12];         					// Corrente de Entrada do Inversor 1 (15)
-		WEIv1 = (VBat * IEIv1)/100;					// Potência de Entrada do Inversor 1 (Med[41])
-		VSIv1 = Med[4];          					// Tensão de Saída do Inversor 1
-		ISInv1 = (7*Med[10])/10;   					// Corrente de Saída do Inversor 1 (13)
-		WSInv1 = (VSIv1 * ISInv1)/1000;				// Potencia de Saida do Inversor 1 (Med[42])
-		TDInv1 = Med[8];         					// Temperatura do Driver do Inversor 1 (2)
-		TTInv1 = Med[9];         					// Temperatura do Transformador do Inversor 1 (7)
-		if (WEIv1 > 2000) {
-			EfIv1 = (100 * WSInv1) / WEIv1;			// Eficiência do Inversor 1
-		}
-		else {
-			EfIv1 = 0;
-		}
-				
-		// Leitura e Cálculo das Medidas referentes ao Inversor 2
-		IEIv2 = Med[15];         					// Corrente de Entrada do Inversor 2 (12)
-		WEIv2 = (VBat * IEIv2) / 100;         		// Potencia de Entrada do Inversor 2 (Med[38])
-		VSIv2 = Med[6];          					// Tensão de Saída do Inversor 2
-		ISInv2 = Med[13];        					// Corrente de Saída do Inversor 2 (10)
-		WSInv2 = (VSIv2 * ISInv2) / 1000;       	// Potencia de Saida do Inversor 2 (Med[39])
-		TDInv2 = Med[2];         					// Temperatura do Driver do Inversor 2 (8)
-		TTInv2 = Med[7];         					// Temperatura do Transformador do Inversor 2 (9)
-		if (WEIv2 > 2000) {
-			EfIv2 = (100 * WSInv2) / WEIv2;			// Eficiência do Inversor 2
-		}
-		else {
-			EfIv2 = 0;
-		}
-		
-	} // Fim do Método
-	
-	
-	//*****************************************************************************************************************
-    //                                                                                                                *
-	// Nome do Método: IniciaVarGlobais()                                                                             *
-	//	                                                                                                              *
-	// Funcao: Inicia as Variáveis Globais                                                                            *
-    //                                                                                                                *
-	// Entrada: não tem                                                                                               *
-    //                                                                                                                *
-	// Saida: não tem                                                                                                 *
-	//	                                                                                                              *
-	//*****************************************************************************************************************
-	//
-	public static void IniciaVarGlobais() {
-		
-		// Inicia as Variaveis Globais
-		ComRecHTTP = "     ";
-		flagFim = false;
-		Comando = 1;
-		ComRecHTTP = "";
-		Icarga3 = 0;                  // Corrente Carga 3 (Geladeira)
-		VRede = 0;                    // Tensão da Rede
-		VBat = 0;                     // Tensão do Banco de Baterias
-		VMBat = 0;                    // Tensão Média Estendida do Banco de Baterias
-		ICircCC = 0;                  // Corrente Total dos Circuitos CC
-		WCircCC = 0;                  // Potência Total dos Circuitos CC
-		ITotCg = 0;                   // Corrente Total Consumida pelas Cargas
-		WTotCg = 0;                   // Potência Total Consumida pelas Cargas
-		IFonteCC = 0;                 // Corrente de Saída da Fonte CC
-		WFonteCC = 0;                 // Potência de Saída da Fonte CC
-		IBat = 0;                     // Corrente de Carga / Descarga do Banco de Baterias
-		WBat = 0;                     // Potência de Carga / Descarga do Banco de Baterias
-		TBat = 0;                     // Temperatura do Banco de Baterias
-		TmpBmbLig = 0;                // Tempo da Bomba Ligada
-		ITotGer = 0;                  // Corrente Total Gerada
-		WTotGer = 0;                  // Potência Total Gerada
-		IEIv2 = 0;                    // Corrente de Entrada do Inversor 2
-		WEIv2 = 0;                    // Potência de Entrada do Inversor 2
-		VSIv2 = 0;                    // Tensão de Saída do Inversor 2
-		ISInv2 = 0;                   // Corrente de Saída do Inversor 2
-		WSInv2 = 0;                   // Potência de Saída do Inversor 2
-		TDInv2 = 0;                   // Temperatura do Driver do Inversor 2
-		TTInv2 = 0;                   // Temperatura do Transformador do Inversor 2
-		IEIv1 = 0;                    // Corrente de Entrada do Inversor 1
-		WEIv1 = 0;                    // Potência de Entrada do Inversor 1
-		VSIv1 = 0;                    // Tensão de Saída do Inversor 1
-		ISInv1 = 0;                   // Corrente de Saída do Inversor 1
-		WSInv1 = 0;                   // Potência de Saída do Inversor 1
-		TDInv1 = 0;                   // Temperatura do Driver do Inversor 1
-		TTInv1 = 0;                   // Temperatura do Transformador do Inversor 1
-		FonteCC2Ligada = 0;
-		ContadorCiclos = 0;
-		
-		Hora = 0;
-		Minuto = 0;
-		Segundo = 0;
-		Dia = 1;
-		Mes = 1;
-		Ano = 19;
-		EstComUTR = 0;
-		EstComCC1 = 0;
-		EstComCC2 = 0;
-		
-	} // Fim do Método
-	
-	
-	//*****************************************************************************************************************
-    //                                                                                                                * 
-	// Nome do Método: EnvArqTxt                                                                                      *
-	//	                                                                                                              *
-	// Funcao: envia para o cliente conectado uma mensagem HTTP lida de um arquivo texto ( sequência de caracteres)   *
-	//                                                                                                                *
-	// Entrada: Socket de conexão, String com o caminho do arquivo (diretório), String com o nome do arquivo,         *
-	//          boolean Verbose (habilita envio de mensagens para o terminal)                                         *
-	//                                                                                                                *
-	// Saida: se o arquivo foi lido corretamente retorna true                                                         *
-	//	                                                                                                              *
-	//*****************************************************************************************************************
-	//
-	public static boolean EnvArqTxt(Socket connect, String Caminho, String NomeArquivo, boolean Verbose) {
-		PrintWriter out = null;
-		boolean ArquivoLido = false;
-		
-		try {
-			out = new PrintWriter(connect.getOutputStream());
-			Arquivo Arq = new Arquivo();
-			
-			
-			if (Arq.Existe(Caminho, NomeArquivo)) {
-				int TamArquivo = Arq.Tamanho(Caminho, NomeArquivo);
-				String TipoArquivo = Arq.Tipo(NomeArquivo);
-				String DadosArquivo = Arq.LeTexto(Caminho, NomeArquivo);
-				ArquivoLido = true;
-				out.println("HTTP/1.1 200 OK");
-				out.println("Server: Java HTTP Server from PraxServer : 1.0");
-				out.println("Date: " + new Date());
-				out.println("Content-type: " + TipoArquivo);
-				out.println("Content-length: " + TamArquivo);
-				out.println();
-				out.print(DadosArquivo);
-				out.flush();
-				
-				Util.Terminal("Lido Arquivo " + TipoArquivo + ": " + NomeArquivo, false, Verbose);
-				Util.Terminal("Enviada Mensagem HTTP (Texto) " + TipoArquivo + " com " + TamArquivo + " Caracteres", false, Verbose);
-			}
-			else {
-				Util.Terminal("Erro na leitura do arquivo: " + NomeArquivo, false, Verbose);
-			}
-			return(ArquivoLido);
-		}
-		catch (IOException ioe) {
-			Util.Terminal("Erro na Rotina EnvMsgArquivoTxt", false, Verbose);
-			return(false);
-		}
-	} // Fim do Método
-	
-	
-	//*****************************************************************************************************************
-    //                                                                                                                *
-	// Nome do Método: EnvArqByte                                                                                     *
-	//	                                                                                                              *
-	// Funcao: envia para o cliente conectado uma mensagem HTTP lida de um arquivo em Bytes                           *
-	//                                                                                                                *
-	// Entrada: Socket de conexão, String com o caminho do arquivo (diretório), String com o nome do arquivo,         *
-	//          boolean Verbose (habilita envio de mensagens para o terminal)                                         *
-	//                                                                                                                *
-	// Saida: se o arquivo foi lido corretamente retorna true                                                         *
-	//	                                                                                                              *
-	//*****************************************************************************************************************
-	//
-	public static boolean EnvArqByte(Socket connect, String Caminho, String NomeArquivo, boolean Verbose) {
-		PrintWriter out = null; BufferedOutputStream dataOut = null;
-		try {
-			out = new PrintWriter(connect.getOutputStream());
-			dataOut = new BufferedOutputStream(connect.getOutputStream());
-			Arquivo Arq = new Arquivo();
-			int TamArquivo = Arq.Tamanho(Caminho, NomeArquivo);
-			String tipo = Arq.Tipo(NomeArquivo);
-			byte[] MsgDados = Arq.LeByte(Caminho, NomeArquivo);
-			
-			out.println("HTTP/1.1 200 OK");
-			out.println("Server: Java HTTP Server from PraxServer : 1.0");
-			out.println("Date: " + new Date());
-			out.println("Content-type: " + tipo);
-			out.println("Content-length: " + TamArquivo);
-			out.println();
-			out.flush();
-			dataOut.write(MsgDados, 0, TamArquivo);
-			dataOut.flush();
-					
-			Util.Terminal("Lido Arquivo " + tipo + " : " + NomeArquivo, false, Verbose);
-			Util.Terminal("Enviada Mensagem HTTP (Byte) do tipo " + tipo + " com " + TamArquivo + " Caracteres", false, Verbose);
-			
-			return(true);
-		}
-		catch (IOException ioe) {
-			if (Verbose) {
-				System.out.println("Erro na Rotina EnvMsgArquivoByte");
-			}
-			return(false);
-		}
-	} // Fim do Método
-	
-	
-	//*****************************************************************************************************************
-	//                                                                                                                *
-	// Nome do Método: EnvString                                                                                      *
-	//	                                                                                                              *
-	// Funcao: envia para o cliente conectado uma mensagem HTTP lida de uma String                                    *
-	//                                                                                                                *
-	// Entrada: Socket de conexão, String com a Mensagem a ser Enviada; String com o Tipo da Mensagem,                *
-    //          boolean Verbose (habilita envio de mensagens para o terminal)                                         *
-	//                                                                                                                *
-	// Saida: se a mensagem foi enviada corretamente, retorna true                                                    *
-	//	                                                                                                              *
-	//*****************************************************************************************************************
-	//
-	public static boolean EnvString(Socket connect, String Msg, String Tipo, String CodRsp, boolean Verbose) {
-		PrintWriter out = null;
-		try {
-			out = new PrintWriter(connect.getOutputStream());
-			int TamMsg = Msg.length();
-			out.println("HTTP/1.1 " + CodRsp + " OK");
-			out.println("Server: Java HTTP Server from PraxServer : 1.0");
-			out.println("Date: " + new Date());
-			out.println("Content-type: " + Tipo);
-			out.println("Content-length: " + TamMsg);
-			out.println();
-			out.print(Msg);
-			out.flush();
-			
-			Util.Terminal("Enviada Mensagem HTTP do tipo " + Tipo + " com " + TamMsg + " Caracteres", false, Verbose);
-			
-			return(true);
-		}
-		catch (IOException ioe) {
-			if (Verbose) {
-				System.out.println("Erro ao enviar a mensagem HTTP lida de uma string");
-			}
-			return(false);
-		}
-	} // Fim do Método
-	
-	
-	//*****************************************************************************************************************
-	//                                                                                                                *
-	// Nome do Método: EnvStringErro                                                                                  *
-	//	                                                                                                              *
-	// Funcao: envia para o cliente conectado uma mensagem de erro HTTP lida de uma String                            *
-	//                                                                                                                *
-	// Entrada: Socket de conexão, int com o código do erro (404 ou 501), boolean Verbose                             *
-	//          (habilita envio de mensagens para o terminal)                                                         *
-	//                                                                                                                *
-	// Saida: se a mensagem foi enviada corretamente, retorna true                                                    *
-	//	                                                                                                              *
-	//*****************************************************************************************************************
-	//
-	public static boolean EnvStringErro(Socket connect, int Erro, boolean Verbose) {
-		PrintWriter out = null;
-		try {
-			out = new PrintWriter(connect.getOutputStream());
-			String LinhaInicial = "";
-			String MsgErro = "";
-			String Tipo = "text/html";
-			if (Erro == 404) {
-				LinhaInicial = "HTTP/1.1 404 File Not Found";
-				MsgErro = "<h2>404 File Not Found</h2><h3>HTTP/1.1 PraxServer</h3>";
-			}
-			
-			if (Erro == 501) {
-				LinhaInicial = "HTTP/1.1 501 Not Implemented";
-				MsgErro = "<h2>501 Not Implemented</h2><h3>HTTP/1.1 PraxServer</h3>";
-			}
-			int TamMsg = MsgErro.length();
-			out.println(LinhaInicial);
-			out.println("Server: Java HTTP Server from PraxServer : 1.0");
-			out.println("Date: " + new Date());
-			out.println("Content-type: " + Tipo);
-			out.println("Content-length: " + TamMsg);
-			out.println();
-			out.print(MsgErro);
-			out.flush();
-			
-			Util.Terminal("Enviada Mensagem de Erro: " + LinhaInicial, false, Verbose);
-			
-			return(true);
-		}
-		catch (IOException ioe) {
-			Util.Terminal("Erro ao enviar a mensagem de erro lida de uma string", false, Verbose);
-			return(false);
-		}
-	}  // Fim do Método
 	
 }

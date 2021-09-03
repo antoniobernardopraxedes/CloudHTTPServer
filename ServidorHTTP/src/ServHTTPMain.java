@@ -14,13 +14,13 @@ import java.util.StringTokenizer;
 
 //*********************************************************************************************************************
 //                                                                                                                    *
-//Autor: Antonio Bernardo de Vasconcellos Praxedes                                                                    *
+// Autor: Antonio Bernardo de Vasconcellos Praxedes                                                                   *
 //                                                                                                                    *  
-//Data: 02/09/2021                                                                                                    *
+// Data: 02/09/2021                                                                                                   *
 //                                                                                                                    *
-//Nome da Classe: HTTPSrvCloud                                                                                        *
+// Nome da Classe: HTTPSrvCloud                                                                                       *
 //                                                                                                                    *
-//Funcao: Programa Principal Servidor HTTP para ser instalado no Servidor em Nuvem                                    *
+// Funcao: Programa Principal Servidor HTTP para ser instalado no Servidor em Nuvem                                   *
 //                                                                                                                    *
 //*********************************************************************************************************************
 //
@@ -49,8 +49,8 @@ public class ServHTTPMain implements Runnable {
 	//
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Mensagem.IniciaVarGlobais();
-		Mensagem.PrtMsg = false;
+		
+		//Mensagem.PrtMsg = false;
 		MsgXML = Mensagem.XML01Falha(0);
 		
 		try {
@@ -61,7 +61,7 @@ public class ServHTTPMain implements Runnable {
 			
 			if (NomeComputador.equals("antonio-Vostro1510")) {
 				Caminho = CaminhoLocal;
-				Util.Terminal("Servidor Iniciado no Computador Local", false, true);
+				Util.Terminal("Servidor Iniciado no Computador" + NomeComputador, false, true);
 			}
 			else {
 				Caminho = CaminhoNuvem;
@@ -175,7 +175,7 @@ public class ServHTTPMain implements Runnable {
 					
 				// Se não há requisição de arquivo, solicita arquivo index.html (página raiz)
 				if (Requisicao.equals("/") || Requisicao.equals("/?")) {
-					RecReqValida = Mensagem.EnvArqTxt(connect, Caminho, "index.html", Verbose);
+					RecReqValida = EnvRecMsg.EnvArqTxt(connect, Caminho, "index.html", Verbose);
 				}
 				else { // Trata a requisição do método GET
 					
@@ -189,7 +189,7 @@ public class ServHTTPMain implements Runnable {
 						else {
 							ArqReq = ArquivoReq;
 						}
-						RecReqValida = Mensagem.EnvArqTxt(connect, Caminho, ArqReq, Verbose);
+						RecReqValida = EnvRecMsg.EnvArqTxt(connect, Caminho, ArqReq, Verbose);
 					}
 					
 					// Trata requisições de arquivos texto de estilos (CSS)
@@ -201,7 +201,7 @@ public class ServHTTPMain implements Runnable {
 						else {
 							ArqReq = ArquivoReq;
 						}
-						RecReqValida = Mensagem.EnvArqTxt(connect, Caminho, ArqReq, Verbose);
+						RecReqValida = EnvRecMsg.EnvArqTxt(connect, Caminho, ArqReq, Verbose);
 					}
 					
 					// Trata requisições de arquivos de programas Javascript
@@ -213,12 +213,12 @@ public class ServHTTPMain implements Runnable {
 						else {
 							ArqReq = ArquivoReq;
 						}
-						RecReqValida = Mensagem.EnvArqTxt(connect, Caminho, ArqReq, Verbose);
+						RecReqValida = EnvRecMsg.EnvArqTxt(connect, Caminho, ArqReq, Verbose);
 					}
 					
 					// Trata requisições de arquivos de imagem
 					if (ArquivoReq.endsWith(".ico") || ArquivoReq.endsWith(".jpg") || ArquivoReq.endsWith(".png")) {
-						RecReqValida = Mensagem.EnvArqByte(connect, Caminho, ArquivoReq, Verbose);
+						RecReqValida = EnvRecMsg.EnvArqByte(connect, Caminho, ArquivoReq, Verbose);
 					}
 						
 					// Trata requisição de mensagem XML de Atualização dos Valores das Variáveis
@@ -226,10 +226,10 @@ public class ServHTTPMain implements Runnable {
 						RecReqValida = true;
 						Contador = Contador + 1;
 						if (Contador < 8) {
-							Mensagem.EnvString(connect, MsgXML, "text/xml", "200", Verbose);
+							EnvRecMsg.EnvString(connect, MsgXML, "text/xml", "200", Verbose);
 						}
 						else {
-							Mensagem.EnvString(connect, Mensagem.XML01Falha(0), "text/xml", "200", Verbose);
+							EnvRecMsg.EnvString(connect, Mensagem.XML01Falha(0), "text/xml", "200", Verbose);
 						}
 					}
 				} // else if (Requisicao.equals("/") || Requisicao.equals("/?")) {
@@ -254,24 +254,25 @@ public class ServHTTPMain implements Runnable {
 						TipoMsg = parseLinha4.nextToken().toLowerCase();
 												
 						if (TipoMsg.equals("application/octet-stream")) {  // Se é mensagem do tipo binária
-								
+							
+							int[] MsgBinRec = new int[512];
 							for (int i = 0; i < TamanhoMsg; i++){
-								Mensagem.receiveData1[i] = ByteIn.read();    // Recebe os bytes e carrega no buffer
+								MsgBinRec[i] = ByteIn.read();           // Recebe os bytes e carrega no buffer
 							}
 							
-							int Byte0 = Mensagem.receiveData1[0];
-							int Byte1 = Mensagem.receiveData1[1];
+							int Byte0 = MsgBinRec[0];
+							int Byte1 = MsgBinRec[1];
 							boolean MsgBinOK = false;
-							if ((Byte0 == 0x60) && (Byte1 == 0x45)) {  // Se recebeu mensagem CoAP válida,
-								Mensagem.LeEstMedsPayload();             // le as variaveis
+							if ((Byte0 == 0x60) && (Byte1 == 0x45)) {   // Se recebeu mensagem CoAP válida,
+								Mensagem.LeEstMedsPayload(MsgBinRec);   // le as variaveis
 								MsgBinOK = true;
 							}
-							if (MsgBinOK) {                         // Se a mensagem CoAP recebida é válida,
-								if (Mensagem.EstCom1 == 1) {   		// e se a comunicacao com o programa de atualização está OK,
-									MsgXML = Mensagem.XML01();        // monta a mensagem XML
+							if (MsgBinOK) {                             // Se a mensagem CoAP recebida é válida,
+								if (Mensagem.getEstCom1() == 1) {       // e se a comunicacao com o programa de atualização está OK,
+									MsgXML = Mensagem.XML01();          // monta a mensagem XML
 									MsgXML = MsgXML + " ";
 								}
-								else {                        		// Se a comunicacao com o programa de atualização está em falha,
+								else {                        		    // Se a comunicacao com o Atualizador está em falha,
 									Mensagem.XML01Falha(1);     		// monta a mensagem XML de falha
 								}
 								Util.Terminal("Recebida Mensagem Binária de Atualizacao com " + TamanhoMsg + " Bytes", false, Verbose);
@@ -280,14 +281,14 @@ public class ServHTTPMain implements Runnable {
 								String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 								StrComando = StrComando + "<CMD></CMD>";
 								//EnvMsgStringTxt(StrComando, "text/xml", "200");
-								Mensagem.EnvString(connect, StrComando, "text/xml", "200", Verbose);
+								EnvRecMsg.EnvString(connect, StrComando, "text/xml", "200", Verbose);
 								Contador = 0;
 							}
 							else {
 								Util.Terminal("Recebida Mensagem de Atualizacao Invalida", false, Verbose);
 								String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 								StrComando = StrComando + "<CMD>MsgInv</CMD>";
-								Mensagem.EnvString(connect, StrComando, "text/xml", "200", Verbose);
+								EnvRecMsg.EnvString(connect, StrComando, "text/xml", "200", Verbose);
 							}
 						} // if (TipoMsg.equals("application/octet-stream"))
 					} // if ((IdLinha3 == "content-length:") && (IdLinha4 == "content-type:"))
@@ -296,11 +297,11 @@ public class ServHTTPMain implements Runnable {
 			
 			if (RecMetodoValido) {    // Se foi recebido um método válido,
 				if (!RecReqValida) {  // e se não está disponível o recurso solicitado pelo método GET ou POST
-					Mensagem.EnvStringErro(connect, 404, Verbose);
+					EnvRecMsg.EnvStringErro(connect, 404, Verbose);
 				}
 			}
 			else {                    // Se não foi recebido um método válido,
-				Mensagem.EnvStringErro(connect, 501, Verbose);
+				EnvRecMsg.EnvStringErro(connect, 501, Verbose);
 			}
 			
 		/*} catch (FileNotFoundException fnfe) {

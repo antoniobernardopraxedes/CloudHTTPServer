@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Date;
 import java.lang.String;
 
 public class EnvRecMsg {
@@ -421,6 +422,194 @@ public class EnvRecMsg {
         return MsgEnvSrv;
 
     } // Fim da Rotina LeEstMedsPayload()
+    
+    
+	//*****************************************************************************************************************
+    //                                                                                                                * 
+	// Nome do Método: EnvArqTxt                                                                                      *
+	//	                                                                                                              *
+	// Funcao: envia para o cliente conectado uma mensagem HTTP lida de um arquivo texto ( sequência de caracteres)   *
+	//                                                                                                                *
+	// Entrada: Socket de conexão, String com o caminho do arquivo (diretório), String com o nome do arquivo,         *
+	//          boolean Verbose (habilita envio de mensagens para o terminal)                                         *
+	//                                                                                                                *
+	// Saida: se o arquivo foi lido corretamente retorna true                                                         *
+	//	                                                                                                              *
+	//*****************************************************************************************************************
+	//
+	public static boolean EnvArqTxt(Socket connect, String Caminho, String NomeArquivo, boolean Verbose) {
+		PrintWriter out = null;
+		boolean ArquivoLido = false;
+		
+		try {
+			out = new PrintWriter(connect.getOutputStream());
+			Arquivo Arq = new Arquivo();
+			
+			
+			if (Arq.Existe(Caminho, NomeArquivo)) {
+				int TamArquivo = Arq.Tamanho(Caminho, NomeArquivo);
+				String TipoArquivo = Arq.Tipo(NomeArquivo);
+				String DadosArquivo = Arq.LeTexto(Caminho, NomeArquivo);
+				ArquivoLido = true;
+				out.println("HTTP/1.1 200 OK");
+				out.println("Server: Java HTTP Server from PraxServer : 1.0");
+				out.println("Date: " + new Date());
+				out.println("Content-type: " + TipoArquivo);
+				out.println("Content-length: " + TamArquivo);
+				out.println();
+				out.print(DadosArquivo);
+				out.flush();
+				
+				Util.Terminal("Lido Arquivo " + TipoArquivo + ": " + NomeArquivo, false, Verbose);
+				Util.Terminal("Enviada Mensagem HTTP (Texto) " + TipoArquivo + " com " + TamArquivo + " Caracteres", false, Verbose);
+			}
+			else {
+				Util.Terminal("Erro na leitura do arquivo: " + NomeArquivo, false, Verbose);
+			}
+			return(ArquivoLido);
+		}
+		catch (IOException ioe) {
+			Util.Terminal("Erro na Rotina EnvMsgArquivoTxt", false, Verbose);
+			return(false);
+		}
+	} // Fim do Método
+	
+	
+	//*****************************************************************************************************************
+    //                                                                                                                *
+	// Nome do Método: EnvArqByte                                                                                     *
+	//	                                                                                                              *
+	// Funcao: envia para o cliente conectado uma mensagem HTTP lida de um arquivo em Bytes                           *
+	//                                                                                                                *
+	// Entrada: Socket de conexão, String com o caminho do arquivo (diretório), String com o nome do arquivo,         *
+	//          boolean Verbose (habilita envio de mensagens para o terminal)                                         *
+	//                                                                                                                *
+	// Saida: se o arquivo foi lido corretamente retorna true                                                         *
+	//	                                                                                                              *
+	//*****************************************************************************************************************
+	//
+	public static boolean EnvArqByte(Socket connect, String Caminho, String NomeArquivo, boolean Verbose) {
+		PrintWriter out = null; BufferedOutputStream dataOut = null;
+		try {
+			out = new PrintWriter(connect.getOutputStream());
+			dataOut = new BufferedOutputStream(connect.getOutputStream());
+			Arquivo Arq = new Arquivo();
+			int TamArquivo = Arq.Tamanho(Caminho, NomeArquivo);
+			String tipo = Arq.Tipo(NomeArquivo);
+			byte[] MsgDados = Arq.LeByte(Caminho, NomeArquivo);
+			
+			out.println("HTTP/1.1 200 OK");
+			out.println("Server: Java HTTP Server from PraxServer : 1.0");
+			out.println("Date: " + new Date());
+			out.println("Content-type: " + tipo);
+			out.println("Content-length: " + TamArquivo);
+			out.println();
+			out.flush();
+			dataOut.write(MsgDados, 0, TamArquivo);
+			dataOut.flush();
+					
+			Util.Terminal("Lido Arquivo " + tipo + " : " + NomeArquivo, false, Verbose);
+			Util.Terminal("Enviada Mensagem HTTP (Byte) do tipo " + tipo + " com " + TamArquivo + " Caracteres", false, Verbose);
+			
+			return(true);
+		}
+		catch (IOException ioe) {
+			if (Verbose) {
+				System.out.println("Erro na Rotina EnvMsgArquivoByte");
+			}
+			return(false);
+		}
+	} // Fim do Método
+	
+	
+	//*****************************************************************************************************************
+	//                                                                                                                *
+	// Nome do Método: EnvString                                                                                      *
+	//	                                                                                                              *
+	// Funcao: envia para o cliente conectado uma mensagem HTTP lida de uma String                                    *
+	//                                                                                                                *
+	// Entrada: Socket de conexão, String com a Mensagem a ser Enviada; String com o Tipo da Mensagem,                *
+    //          boolean Verbose (habilita envio de mensagens para o terminal)                                         *
+	//                                                                                                                *
+	// Saida: se a mensagem foi enviada corretamente, retorna true                                                    *
+	//	                                                                                                              *
+	//*****************************************************************************************************************
+	//
+	public static boolean EnvString(Socket connect, String Msg, String Tipo, String CodRsp, boolean Verbose) {
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(connect.getOutputStream());
+			int TamMsg = Msg.length();
+			out.println("HTTP/1.1 " + CodRsp + " OK");
+			out.println("Server: Java HTTP Server from PraxServer : 1.0");
+			out.println("Date: " + new Date());
+			out.println("Content-type: " + Tipo);
+			out.println("Content-length: " + TamMsg);
+			out.println();
+			out.print(Msg);
+			out.flush();
+			
+			Util.Terminal("Enviada Mensagem HTTP do tipo " + Tipo + " com " + TamMsg + " Caracteres", false, Verbose);
+			
+			return(true);
+		}
+		catch (IOException ioe) {
+			if (Verbose) {
+				System.out.println("Erro ao enviar a mensagem HTTP lida de uma string");
+			}
+			return(false);
+		}
+	} // Fim do Método
+	
+	
+	//*****************************************************************************************************************
+	//                                                                                                                *
+	// Nome do Método: EnvStringErro                                                                                  *
+	//	                                                                                                              *
+	// Funcao: envia para o cliente conectado uma mensagem de erro HTTP lida de uma String                            *
+	//                                                                                                                *
+	// Entrada: Socket de conexão, int com o código do erro (404 ou 501), boolean Verbose                             *
+	//          (habilita envio de mensagens para o terminal)                                                         *
+	//                                                                                                                *
+	// Saida: se a mensagem foi enviada corretamente, retorna true                                                    *
+	//	                                                                                                              *
+	//*****************************************************************************************************************
+	//
+	public static boolean EnvStringErro(Socket connect, int Erro, boolean Verbose) {
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(connect.getOutputStream());
+			String LinhaInicial = "";
+			String MsgErro = "";
+			String Tipo = "text/html";
+			if (Erro == 404) {
+				LinhaInicial = "HTTP/1.1 404 File Not Found";
+				MsgErro = "<h2>404 File Not Found</h2><h3>HTTP/1.1 PraxServer</h3>";
+			}
+			
+			if (Erro == 501) {
+				LinhaInicial = "HTTP/1.1 501 Not Implemented";
+				MsgErro = "<h2>501 Not Implemented</h2><h3>HTTP/1.1 PraxServer</h3>";
+			}
+			int TamMsg = MsgErro.length();
+			out.println(LinhaInicial);
+			out.println("Server: Java HTTP Server from PraxServer : 1.0");
+			out.println("Date: " + new Date());
+			out.println("Content-type: " + Tipo);
+			out.println("Content-length: " + TamMsg);
+			out.println();
+			out.print(MsgErro);
+			out.flush();
+			
+			Util.Terminal("Enviada Mensagem de Erro: " + LinhaInicial, false, Verbose);
+			
+			return(true);
+		}
+		catch (IOException ioe) {
+			Util.Terminal("Erro ao enviar a mensagem de erro lida de uma string", false, Verbose);
+			return(false);
+		}
+	}  // Fim do Método
 
 
     //******************************************************************************************************************
@@ -510,17 +699,17 @@ public class EnvRecMsg {
         byte EstCom1 = MsgBinRec[30];
 
         // Le os Estados Digitais da mensagem recebida
-        int EstadoBombaAQ = BytetoInt(MsgBinRec[73]);		// Estado da Bomba de Água Quente
-        int EstadoAquecedor = BytetoInt(MsgBinRec[72]);	    // Estado do Aquecedor do Boiler
+        int EstadoBombaAQ = Util.BytetoInt(MsgBinRec[73]);		// Estado da Bomba de Água Quente
+        int EstadoAquecedor = Util.BytetoInt(MsgBinRec[72]);	    // Estado do Aquecedor do Boiler
 
         // Le as Medidas da mensagem recebida
-        int TemperaturaBoiler = TwoBytetoInt(MsgBinRec[48], MsgBinRec[49]); 	// Temperatura do Boiler
-        int TemperaturaPlaca = TwoBytetoInt(MsgBinRec[51], MsgBinRec[52]); 	// Temperatura da Placa Solar
-        int TempoBmbLigada = TwoBytetoInt(MsgBinRec[66], MsgBinRec[67]); 	// Tempo da Bomba Ligada
-        int TempoBmbDesligada = TwoBytetoInt(MsgBinRec[69], MsgBinRec[70]); 	// Tempo da Bomba Desligada
+        int TemperaturaBoiler = Util.TwoBytetoInt(MsgBinRec[48], MsgBinRec[49]); 	// Temperatura do Boiler
+        int TemperaturaPlaca = Util.TwoBytetoInt(MsgBinRec[51], MsgBinRec[52]); 	// Temperatura da Placa Solar
+        int TempoBmbLigada = Util.TwoBytetoInt(MsgBinRec[66], MsgBinRec[67]); 	// Tempo da Bomba Ligada
+        int TempoBmbDesligada = Util.TwoBytetoInt(MsgBinRec[69], MsgBinRec[70]); 	// Tempo da Bomba Desligada
 
     }
-
+/*
     //*****************************************************************************************************************
     // Nome do Método: BytetoInt                                                                                      *
     //                                                                                                                *
@@ -557,7 +746,7 @@ public class EnvRecMsg {
         else { msb = MSByte; }
         return (lsb + 256*msb);
     }
-
+*/
         /*
     //******************************************************************************************************************
     //                                                                                                                 *

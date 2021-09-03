@@ -98,15 +98,15 @@ public class Util {
 	}
 
 	//*****************************************************************************************************************
-	// Nome da Rotina: BytetoInt                                                                                      *
+	// Nome do Método: BytetoInt                                                                                      *
 	//                                                                                                                *
 	// Funcao: converte um valor byte para inteiro (conversao sem sinal)                                              *
-	// Entrada: valor byte sem sinal de 0 a 255                                                                       *
+	// Entrada: valor byte  (-128 a +127)                                                                       *
 	// Saida: valor (inteiro) sempre positivo de 0 a 255                                                              *
 	//                                                                                                                *
 	//*****************************************************************************************************************
 	//
-	static int BytetoInt(int valor) {
+	static int BytetoInt(byte valor) {
 		if (valor < 0) {
 			return(256 + valor);
 		}
@@ -116,7 +116,7 @@ public class Util {
 	}
 		
 	//*****************************************************************************************************************
-	// Nome da Rotina: TwoBytetoInt                                                                                   *
+	// Nome do Método: DoisBytetoInt                                                                                  *
 	//                                                                                                                *
 	// Funcao: converte dois bytes em sequencia de um array para inteiro (conversao sem sinal)                        *
 	// Entrada: dois bytes consecutivos (LSB e MSB) sem sinal de 0 a 255                                              *
@@ -135,8 +135,28 @@ public class Util {
 	}
 	
 	
+    //*****************************************************************************************************************
+    // Nome do Método: TwoBytetoInt                                                                                   *
+    //                                                                                                                *
+    // Funcao: converte dois bytes em sequencia de um array para inteiro (conversao sem sinal)                        *
+    // Entrada: dois bytes consecutivos (LSB e MSB) sem sinal de 0 a 255                                              *
+    // Saida: valor (inteiro) sempre positivo de 0 a 65535                                                            *
+    //                                                                                                                *
+    //*****************************************************************************************************************
+    //
+    static int TwoBytetoInt(byte LSByte, byte MSByte) {
+        int lsb;
+        int msb;
+        if (LSByte < 0) { lsb = LSByte + 256; }
+        else { lsb = LSByte; }
+        if (MSByte < 0) { msb = MSByte + 256; }
+        else { msb = MSByte; }
+        return (lsb + 256*msb);
+    }
+	
+	
 	//*****************************************************************************************************************
-	// Nome da Rotina: ThreeBytetoInt                                                                                 *
+	// Nome do Método: ThreeBytetoInt                                                                                 *
 	//                                                                                                                *
 	// Funcao: converte tres bytes em sequencia de um array para inteiro (conversao sem sinal)                        *
 	// Entrada: dois bytes consecutivos (LSB e MSB) sem sinal de 0 a 255                                              *
@@ -159,7 +179,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: FormAnaHora                                                                                    *
+	// Nome do Método: FormAnaHora                                                                                    *
 	//                                                                                                                *
 	// Funcao: converte um inteiro positivo para uma string no formato HH:MM:SS  (hora:minuto:segundo)                *
 	// Entrada: valor inteiro em segundos                                                                             *
@@ -190,7 +210,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: CharToByte                                                                                     *
+	// Nome do Método: CharToByte                                                                                     *
 	//                                                                                                                *
 	// Funcao: converte um caracter numerico em um valor numerico de 0 a 9                                            *
 	// Entrada: caracter: '0' a '9'                                                                                   *
@@ -227,7 +247,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: CharToInt                                                                                      *
+	// Nome do Método: CharToInt                                                                                      *
 	//                                                                                                                *
 	// Funcao: converte um caracter numerico em um valor numerico de 0 a 9                                            *
 	// Entrada: caracter: '0' a '9'                                                                                   *
@@ -264,7 +284,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: TwoCharToByte                                                                                  *
+	// Nome do Método: TwoCharToByte                                                                                  *
 	//                                                                                                                *
 	// Funcao: converte dois caracteres numericos em um valor numerico de 00 a 99                                     *
 	// Entrada: caracteres dezena e unidade ('0' a '9')                                                               *
@@ -272,14 +292,14 @@ public class Util {
 	//                                                                                                                *
 	//*****************************************************************************************************************
 	//
-	static int TwoCharToByte(char Ch10, char Ch1) {
-		int Num = 10*CharToByte(Ch10) + CharToByte(Ch1);
-		return ((byte)Num);
-	}
+	//static int TwoCharToByte(char Ch10, char Ch1) {
+	//	int Num = 10*CharToByte(Ch10) + CharToByte(Ch1);
+	//	return ((byte)Num);
+	//}
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: TwoCharToInt                                                                                  *
+	// Nome do Método: TwoCharToInt                                                                                  *
 	//                                                                                                                *
 	// Funcao: converte dois caracteres numericos em um valor numerico de 00 a 99                                     *
 	// Entrada: caracteres dezena e unidade ('0' a '9')                                                               *
@@ -294,7 +314,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: FourCharToInt                                                                                  *
+	// Nome do Método: FourCharToInt                                                                                  *
 	//                                                                                                                *
 	// Funcao: converte quatro caracteres numericos em um valor numerico de 0000 a 9999                               *
 	// Entrada: caracteres milhar, centena, dezena e unidade ('0' a '9')                                              *
@@ -309,7 +329,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: StringToInt                                                                                    *
+	// Nome do Método: StringToInt                                                                                    *
 	//                                                                                                                *
 	// Funcao: converte uma string de até quatro caracteres numericos em um valor numerico de 0000 a 9999             *
 	// Entrada: string com um numero entre 0 e 9999                                                                   *
@@ -336,8 +356,8 @@ public class Util {
 		return (Num);
 	}
 	
-	   //*****************************************************************************************************************
-    // Nome da Rotina: ByteLow                                                                                        *
+	//*****************************************************************************************************************
+    // Nome do Método: ByteLow                                                                                        *
     //                                                                                                                *
     // Funcao: obtem o byte menos significativo de um valor inteiro                                                   *
     // Entrada: valor inteiro                                                                                         *
@@ -353,7 +373,7 @@ public class Util {
 
 
     //*****************************************************************************************************************
-    // Nome da Rotina: ByteHigh                                                                                       *
+    // Nome do Método: ByteHigh                                                                                       *
     //                                                                                                                *
     // Funcao: obtem o byte mais significativo de um valor inteiro                                                    *
     // Entrada: valor inteiro                                                                                         *
@@ -368,7 +388,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: ImpHora                                                                                        *
+	// Nome do Método: ImpHora                                                                                        *
 	//                                                                                                                *
 	// Funcao: gera umna string com hora:minuto:segundo dia/mes/ano                                                   *
 	// Entrada: valor hora, minuto, segundo, dia, mes, ano                                                            *
@@ -393,7 +413,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: ImpData                                                                                        *
+	// Nome do Método: ImpData                                                                                        *
 	//                                                                                                                *
 	// Funcao: gera umna string com hora:minuto:segundo dia/mes/ano                                                   *
 	// Entrada: valor hora, minuto, segundo, dia, mes, ano                                                            *
@@ -414,11 +434,8 @@ public class Util {
 	}
 	
 	
-	
-
-	
 	//*****************************************************************************************************************
-	// Nome da Rotina: FormAna                                                                                        *
+	// Nome do Método: FormAna                                                                                        *
 	//                                                                                                                *
 	// Funcao: converte um inteiro positivo em formato x100 para uma string com parte inteira e duas casas decimais   *
 	// Entrada: valor inteiro no formato x100                                                                         *
@@ -443,7 +460,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: FrmAna                                                                                         *
+	// Nome do Método: FrmAna                                                                                         *
 	//                                                                                                                *
 	// Funcao: converte um inteiro positivo em formato x100 para uma string com parte inteira e duas casas decimais   *
 	// Entrada: valor inteiro no formato x100 e unidade em string                                                     *
@@ -468,7 +485,7 @@ public class Util {
 
 		
 	//*****************************************************************************************************************
-	// Nome da Rotina: FrmAna3                                                                                        *
+	// Nome do Método: FrmAna3                                                                                        *
 	//                                                                                                                *
 	// Funcao: converte um inteiro positivo em formato x1000 para uma string com parte inteira e tres casas decimais  *
 	// Entrada: valor inteiro no formato x1000 e unidade em string                                                    *
@@ -493,7 +510,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: FormAna3                                                                                       *
+	// Nome do Método: FormAna3                                                                                       *
 	//                                                                                                                *
 	// Funcao: converte um inteiro positivo em formato x1000 para uma string com parte inteira e tres casas decimais  *
 	// Entrada: valor inteiro no formato x1000                                                                        *
@@ -518,7 +535,7 @@ public class Util {
 
 
 	//*****************************************************************************************************************
-	// Nome da Rotina: FormAnaInt                                                                                     *
+	// Nome do Método: FormAnaInt                                                                                     *
 	//                                                                                                                *
 	// Funcao: converte um inteiro positivo para uma string                                                           *
 	// Entrada: valor inteiro no formato x100                                                                         *
@@ -535,7 +552,7 @@ public class Util {
 	
 	
 	//*****************************************************************************************************************
-	// Nome da Rotina: FormAnaInt                                                                                     *
+	// Nome do Método: FormAnaInt                                                                                     *
 	//                                                                                                                *
 	// Funcao: converte um inteiro positivo para uma string                                                           *
 	// Entrada: valor inteiro no formato x100                                                                         *
