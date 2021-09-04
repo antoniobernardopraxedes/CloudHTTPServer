@@ -20,160 +20,167 @@ import java.net.Socket;
 //
 public class Mensagem {
 
-	private static String ComRecHTTP;
+	private String ComRecHTTP;
+	private String MsgXML;
 
 	// Estados Gerais
-	private static int Est24Vcc;
-	private static int EstRede;
-	private static int EstCom1;
-	private static int MdOp;
-	private static int MdCom;
-	private static int MdCtrl1;
-	private static int MdCtrl;
-	private static int Carga1;
-	private static int Carga2;
-	private static int Carga3;
-	private static int Carga4;
-	private static int HabCom;
-	private static int EstadoInversor1;
-	private static int EstadoInversor2;
-	private static int EstadoCarga3;
-	private static int CT2Inv;
-	private static int CT1Inv;
-	private static int CT3Inv;
-	private static int UTR1Com;
-	private static int UTR2Com;
-	private static int CDBat;
-	private static int FonteCC1Ligada;
-	private static int FonteCC2Ligada;
+	private int Est24Vcc;
+	private int EstRede;
+	private int EstCom1;
+	private int MdOp;
+	private int MdCom;
+	private int MdCtrl1;
+	private int MdCtrl;
+	private int Carga1;
+	private int Carga2;
+	private int Carga3;
+	private int Carga4;
+	private int HabCom;
+	private int EstadoInversor1;
+	private int EstadoInversor2;
+	private int EstadoCarga3;
+	private  int CT2Inv;
+	private  int CT1Inv;
+	private  int CT3Inv;
+	private  int UTR1Com;
+	private  int UTR2Com;
+	private  int CDBat;
+	private  int FonteCC1Ligada;
+	private  int FonteCC2Ligada;
 	
 	// Medidas Gerais
-	private static int Icarga3;       // Corrente Carga 3 (Geladeira)
-	private static int VRede;         // Tensão da Rede
-	private static int VBat;          // Tensão do Banco de Baterias
-	private static int VMBat;         // Tensão Média Estendida do Banco de Baterias
-	private static int ICircCC;       // Corrente Total dos Circuitos CC
-	private static int WCircCC;       // Potência Total dos Circuitos CC
-	private static int ITotCg;        // Corrente Total Consumida pelas Cargas
-	private static int WTotCg;        // Potência Total Consumida pelas Cargas
-	private static int IFonteCC;      // Corrente de Saída da Fonte CC
-	private static int WFonteCC;      // Potência de Saída da Fonte CC
-	private static int IBat;          // Corrente de Carga / Descarga do Banco de Baterias
-	private static int WBat;          // Potência de Carga / Descarga do Banco de Baterias
-	private static int TBat;          // Temperatura do Banco de Baterias
-	private static int SDBat;         // Valor de Saude das Baterias
-	private static int IFontesCC12;   // Corrente de Saída das Fontes CC1 e CC2
+	private  int Icarga3;       // Corrente Carga 3 (Geladeira)
+	private  int VRede;         // Tensão da Rede
+	private  int VBat;          // Tensão do Banco de Baterias
+	private  int VMBat;         // Tensão Média Estendida do Banco de Baterias
+	private  int ICircCC;       // Corrente Total dos Circuitos CC
+	private  int WCircCC;       // Potência Total dos Circuitos CC
+	private  int ITotCg;        // Corrente Total Consumida pelas Cargas
+	private  int WTotCg;        // Potência Total Consumida pelas Cargas
+	private  int IFonteCC;      // Corrente de Saída da Fonte CC
+	private  int WFonteCC;      // Potência de Saída da Fonte CC
+	private  int IBat;          // Corrente de Carga / Descarga do Banco de Baterias
+	private  int WBat;          // Potência de Carga / Descarga do Banco de Baterias
+	private  int TBat;          // Temperatura do Banco de Baterias
+	private  int SDBat;         // Valor de Saude das Baterias
+	private  int IFontesCC12;   // Corrente de Saída das Fontes CC1 e CC2
 
 	// Estados Água
-	private	static int CircBoia;
-	private static int BoiaCxAzul;
-	private static int CircBomba;
-	private static int AlRedeBomba;
-	private static int BombaLigada;
-	private static int CxAzNvBx;
-	private static int EdCxAzCheia;
-	private static int EstadoCxAz;
+	private	 int CircBoia;
+	private  int BoiaCxAzul;
+	private  int CircBomba;
+	private  int AlRedeBomba;
+	private  int BombaLigada;
+	private  int CxAzNvBx;
+	private  int EdCxAzCheia;
+	private  int EstadoCxAz;
 
 	// Medidas Água
-	private static int TmpBmbLig;
-	private static int TmpCxAzNvBx;
+	private  int TmpBmbLig;
+	private  int TmpCxAzNvBx;
 
 	// Estados do Inversor 1
-	private static int Iv1Lig;
-	private static int FalhaIv1;
-	private static int SubTensaoInv1;
-	private static int SobreTensaoInv1;
-	private static int SobreCorrInv1;
-	private static int SobreTempDrInv1;
-	private static int SobreTempTrInv1;
-	private static int DjAbIv1;
-	private static int DJEINV1;
+	private  int Iv1Lig;
+	private  int FalhaIv1;
+	private  int SubTensaoInv1;
+	private  int SobreTensaoInv1;
+	private  int SobreCorrInv1;
+	private  int SobreTempDrInv1;
+	private  int SobreTempTrInv1;
+	private  int DjAbIv1;
+	private  int DJEINV1;
 
 	// Estados do Inversor 2
-	private static int Iv2Lig;
-	private static int FalhaIv2;
-	private static int SubTensaoInv2;
-	private static int SobreTensaoInv2;
-	private static int SobreCorrInv2;
-	private static int SobreTempDrInv2;
-	private static int SobreTempTrInv2;
-	private static int DjAbIv2;
-	private static int EstFonteCC;
+	private  int Iv2Lig;
+	private  int FalhaIv2;
+	private  int SubTensaoInv2;
+	private  int SobreTensaoInv2;
+	private  int SobreCorrInv2;
+	private  int SobreTempDrInv2;
+	private  int SobreTempTrInv2;
+	private  int DjAbIv2;
+	private  int EstFonteCC;
 
 	// Medidas da UTR2 - Comunicação com os Controladores de Carga
-	private static int VP12;              // Medida 00: 0x3100 - PV array voltage 1
-	private static int IS12;              // Medida 01: 0x3101 - PV array current 1
-	private static int WS12;              // Medida 02: 0x3102 - PV array power 1
-	private static int VBat1;             // Medida 03: 0x3104 - Battery voltage 1
-	private static int ISCC1;             // Medida 04: 0x3105 - Battery charging current 1
-	private static int WSCC1;             // Medida 05: 0x3106 - Battery charging power 1
-	private static int VP34;              // Medida 08: 0x3100 - PV array voltage 2
-	private static int IS34;              // Medida 09: 0x3101 - PV array current 2
-	private static int WS34;              // Medida 10: 0x3102 - PV array power 2
-	private static int VBat2;             // Medida 11: 0x3104 - Battery voltage 2
-	private static int ISCC2;             // Medida 12: 0x3105 - Battery charging current 2
-	private static int WSCC2;             // Medida 13: 0x3106 - Battery charging power 2 (Med[45])
-	private static int SDCC1;             // Valor de Saude do Controlador de Carga 1
-	private static int SDCC2;             // Valor de Saude do Controlador de Carga 2
+	private  int VP12;              // Medida 00: 0x3100 - PV array voltage 1
+	private  int IS12;              // Medida 01: 0x3101 - PV array current 1
+	private  int WS12;              // Medida 02: 0x3102 - PV array power 1
+	private  int VBat1;             // Medida 03: 0x3104 - Battery voltage 1
+	private  int ISCC1;             // Medida 04: 0x3105 - Battery charging current 1
+	private  int WSCC1;             // Medida 05: 0x3106 - Battery charging power 1
+	private  int VP34;              // Medida 08: 0x3100 - PV array voltage 2
+	private  int IS34;              // Medida 09: 0x3101 - PV array current 2
+	private  int WS34;              // Medida 10: 0x3102 - PV array power 2
+	private  int VBat2;             // Medida 11: 0x3104 - Battery voltage 2
+	private  int ISCC2;             // Medida 12: 0x3105 - Battery charging current 2
+	private  int WSCC2;             // Medida 13: 0x3106 - Battery charging power 2 (Med[45])
+	private  int SDCC1;             // Valor de Saude do Controlador de Carga 1
+	private  int SDCC2;             // Valor de Saude do Controlador de Carga 2
 	
 	// Medidas da Geração
-	private static int ITotGer;           // Corrente Total Gerada
-	private static int WTotGer;           // Potência Total Gerada
+	private  int ITotGer;           // Corrente Total Gerada
+	private  int WTotGer;           // Potência Total Gerada
 
 	// Medidas do Inversor 2
-	private static int IEIv2;             // Corrente de Entrada do Inversor 2
-	private static int WEIv2;             // Potência de Entrada do Inversor 2
-	private static int VSIv2;             // Tensão de Saída do Inversor 2
-	private static int ISInv2;            // Corrente de Saída do Inversor 2
-	private static int WSInv2;            // Potência de Saída do Inversor 2
-	private static int TDInv2;            // Temperatura do Driver do Inversor 2
-	private static int TTInv2;            // Temperatura do Transformador do Inversor 2
-	private static int EfIv2;             // Eficiência do Inversor 2
-	private static int SDIv2;             // Saúde do Inversor 2
-	private static int EstrIv2;           // Estresse do Inversor 2
+	private  int IEIv2;             // Corrente de Entrada do Inversor 2
+	private  int WEIv2;             // Potência de Entrada do Inversor 2
+	private  int VSIv2;             // Tensão de Saída do Inversor 2
+	private  int ISInv2;            // Corrente de Saída do Inversor 2
+	private  int WSInv2;            // Potência de Saída do Inversor 2
+	private  int TDInv2;            // Temperatura do Driver do Inversor 2
+	private  int TTInv2;            // Temperatura do Transformador do Inversor 2
+	private  int EfIv2;             // Eficiência do Inversor 2
+	private  int SDIv2;             // Saúde do Inversor 2
+	private  int EstrIv2;           // Estresse do Inversor 2
 
 	// Medidas do Inversor 1
-	private static int IEIv1;             // Corrente de Entrada do Inversor 1
-	private static int WEIv1;             // Potência de Entrada do Inversor 1
-	private static int VSIv1;             // Tensão de Saída do Inversor 1
-	private static int ISInv1;            // Corrente de Saída do Inversor 1
-	private static int WSInv1;            // Potência de Saída do Inversor 1
-	private static int TDInv1;            // Temperatura do Driver do Inversor 1
-	private static int TTInv1;            // Temperatura do Transformador do Inversor 1
-	private static int EfIv1;             // Eficiência do Inversor 1
-	private static int SDIv1;             // Saúde do Inversor 1
-	private static int EstrIv1;           // Estresse do Inversor 1
+	private  int IEIv1;             // Corrente de Entrada do Inversor 1
+	private  int WEIv1;             // Potência de Entrada do Inversor 1
+	private  int VSIv1;             // Tensão de Saída do Inversor 1
+	private  int ISInv1;            // Corrente de Saída do Inversor 1
+	private  int WSInv1;            // Potência de Saída do Inversor 1
+	private  int TDInv1;            // Temperatura do Driver do Inversor 1
+	private  int TTInv1;            // Temperatura do Transformador do Inversor 1
+	private  int EfIv1;             // Eficiência do Inversor 1
+	private  int SDIv1;             // Saúde do Inversor 1
+	private  int EstrIv1;           // Estresse do Inversor 1
 
-	private static int Hora;
-	private static int Minuto;
-	private static int Segundo;
-	private static int Dia;
-	private static int Mes;
-	private static int Ano;
-	private static int EstComUTR;
-	private static int EstComCC1;
-	private static int EstComCC2;
+	private  int Hora;
+	private  int Minuto;
+	private  int Segundo;
+	private  int Dia;
+	private  int Mes;
+	private  int Ano;
+	private  int EstComUTR;
+	private  int EstComCC1;
+	private  int EstComCC2;
 	
 	
-	public static int getEstCom1() {
+	public  int getEstCom1() {
 		return EstCom1;
 	}
+
+	public String getMsgXML() {
+		return MsgXML;
+	}
 	
-		
+	
 	//*****************************************************************************************************************
 	//                                                                                                                *
-	// Nome da Método: LeEstMedsPayload                                                                               *
+	// Nome da Método: CarregaVariaveis                                                                               *
 	//                                                                                                                *
-	// Funcao: lê as informações de supervisão lidas do Concentrador em formato binário (protocolo CoAP)              *
-	//         e carrega nas variáveis do programa                                                                    *
+	// Funcao: lê os dados de supervisão em formato binário (protocolo CoAP) e carrega nas variáveis do programa      *
 	//                                                                                                                *
-	// Entrada: nao tem                                                                                               *
+	//                                                                                                                *
+	// Entrada: array int[] com a mensagem binária                                                                    *
 	//                                                                                                                *
 	// Saida: nao tem                                                                                                 *
 	//                                                                                                                *
 	//*****************************************************************************************************************
 	//
-	static void LeEstMedsPayload(int[] receiveData1) {
+	 public void CarregaVariaveis(int[] receiveData1) {
+		 
+		ComRecHTTP = "Atualiza";
 
 		Hora = receiveData1[21];
 		Minuto = receiveData1[22];
@@ -337,22 +344,22 @@ public class Mensagem {
 	
 	
 	//**********************************************************************************************************************
-	// Nome do Método: XML01                                                                                               *
+	// Nome do Método: MontaXML                                                                                            *
     //	                                                                                                                   *
-	// Data: 19/08/2021                                                                                                    *
+	// Data: 04/09/2021                                                                                                    *
 	//                                                                                                                     *
-	// Funcao: lê as variáveis de supervisão, caso seja necessário, calcula o valor e retorna uma String                   *
-	//         contendo uma mensagem em formato XML com todos os valores das variáveis atualizados.                        *
+	// Funcao: lê as variáveis de supervisão, carrega nas variáveis, calcula o valor caso seja necessário, e monta uma     *
+	//         string contendo uma mensagem em formato XML com todos os valores das variáveis atualizados.                 *
 	//                                                                                                                     *
-	// Entrada: não tem                                                                                                    *
+	// Entrada: array int[] contendo a mensagem binária em protocolo CoAP                                                  *                                                                                                    *
 	//                                                                                                                     *
 	// Saida: string com a mensagem XML de resposta                                                                        *
     //	                                                                                                                   *
 	//**********************************************************************************************************************
 	//
-	public static String XML01() {
+	public  String MontaXML() {
 		
-		String EndIP1;
+		//String EndIP1;
 		String StrEstCom1;
 		String StrEstComUTR;
 		String StrEstComCC1;
@@ -390,7 +397,7 @@ public class Mensagem {
 		String StrSaudeBat;
 		String StrValVP12;
 		String StrValVP34;
-		       
+		
 		// Estados de Comunicacao
 		StrEstCom1 = "Falha";
 		if (EstCom1 == 1) { StrEstCom1 = "Normal"; }
@@ -774,13 +781,14 @@ public class Mensagem {
 		MsgXMLArray[IdNv0][IdNv1][20][1] = Util.FrmAnaInt(SDIv1," %");
 		
 		// Retorna a Mensagem XML completa em formato de String
-		return(StringXML(MsgXMLArray));
+		MsgXML = StringXML(MsgXMLArray) + " ";
+		return(MsgXML);
 		
 	} // Fim do Método
 	
 	
 	//**********************************************************************************************************************
-	// Nome do Método: XML01Falha()                                                                                        *
+	// Nome do Método: MontaXMLFalha()                                                                                     *
     //	                                                                                                                   *
 	// Data: 10/01/2020                                                                                                    *
 	//                                                                                                                     *
@@ -791,7 +799,7 @@ public class Mensagem {
     //	                                                                                                                   *
 	//**********************************************************************************************************************
 	//
-	public static String XML01Falha(int Opcao) {
+	public  String MontaXMLFalha(int Opcao) {
 		
 		// Carrega na StringXML Array os Tags de Níveis 0,1,e 2 e as variáveis de supervisão
 		String MsgXMLArray[][][][] = new String[1][10][30][2];
@@ -976,7 +984,7 @@ public class Mensagem {
 	//	                                                                                                                        *
 	//***************************************************************************************************************************
 	//
-	static String StringXML(String MsgXMLArray[][][][]) {
+	 String StringXML(String MsgXMLArray[][][][]) {
 		String MsgXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";  // Imprime a linha de Versão e Codificação de Caracteres  
 		MsgXML = MsgXML + "<" + MsgXMLArray[0][0][0][0] + ">\n";         // Imprime a Tag de Nivel 0
 

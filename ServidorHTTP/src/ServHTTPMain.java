@@ -20,21 +20,21 @@ import java.util.StringTokenizer;
 //                                                                                                                    *
 // Nome da Classe: HTTPSrvCloud                                                                                       *
 //                                                                                                                    *
-// Funcao: Programa Principal Servidor HTTP para ser instalado no Servidor em Nuvem                                   *
+// Funcao: Programa Principal Servidor HTTP - Operação na Intranet ou na Nuvem definida na configuração               *
 //                                                                                                                    *
 //*********************************************************************************************************************
 //
 public class ServHTTPMain implements Runnable {
 	
-	static String MsgXML = "";
-	static int Porta = 8080;
-	private Socket connect;
+	private static boolean Verbose = true;
+	private static String MsgXML = "";
+	private static int Contador = 0;
+	private static String Caminho = "";
+	private static String CaminhoNuvem = "/home/bernardo/Executavel/";
+	private static String CaminhoLocal = "/home/antonio/Workspace/Recursos/";
 	
-	static boolean Verbose = true;
-	static String Caminho = "";
-	static String CaminhoNuvem = "/home/bernardo/Executavel/";
-	static String CaminhoLocal = "/home/antonio/Workspace/Recursos/";
-			
+	private Socket connect;
+				
 	public ServHTTPMain(Socket c) {
 		connect = c;
 	}
@@ -50,8 +50,7 @@ public class ServHTTPMain implements Runnable {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		//Mensagem.PrtMsg = false;
-		MsgXML = Mensagem.XML01Falha(0);
+		int Porta = 8080;
 		
 		try {
 			ServerSocket serverConnect = new ServerSocket(Porta);
@@ -84,7 +83,7 @@ public class ServHTTPMain implements Runnable {
 	
 	//***************************************************************************************************************************
 	//                                                                                                                          *
-    // Rotina que Processa a Solicitação do Cliente da ClasseHTTPSrvSup                                                         *
+    // Processa a Solicitação do Cliente                                                                                        *
 	//                                                                                                                          *
 	// Funcao: processa a solicitação do Cliente HTTP                                                                           *
 	//                                                                                                                          *
@@ -92,8 +91,10 @@ public class ServHTTPMain implements Runnable {
 	//
 	//@Override
 	public void run() {
+		
 		BufferedReader in = null; PrintWriter out = null; BufferedOutputStream dataOut = null;
-		InputStreamReader dataIn = null; InputStream ByteIn = null; String fileRequested = null;
+		InputStreamReader dataIn = null; InputStream ByteIn = null; //String fileRequested = null;
+						
 		try {
 			ByteIn = connect.getInputStream();
 			dataIn = new InputStreamReader(ByteIn); //
@@ -111,7 +112,6 @@ public class ServHTTPMain implements Runnable {
 			boolean fim = false;
 			String Requisicao = null;
 			LinhaCab[0] = "";
-			int Contador = 0;
 			boolean mobile = false;
 									
 			while (!fim) {
@@ -170,9 +170,11 @@ public class ServHTTPMain implements Runnable {
 			boolean RecReqValida = false;
 			Util.Terminal("Método: " + method + "  -  Arquivo Requisitado: " + ArquivoReq, false, Verbose);
 			
+			Mensagem Msg = new Mensagem();
+			
 			if (method.equals("GET")) {  // Trata o método GET
 				RecMetodoValido = true;
-					
+				
 				// Se não há requisição de arquivo, solicita arquivo index.html (página raiz)
 				if (Requisicao.equals("/") || Requisicao.equals("/?")) {
 					RecReqValida = EnvRecMsg.EnvArqTxt(connect, Caminho, "index.html", Verbose);
@@ -225,11 +227,12 @@ public class ServHTTPMain implements Runnable {
 					if (ArquivoReq.endsWith("local001.xml")) {
 						RecReqValida = true;
 						Contador = Contador + 1;
+						System.out.println("Contador = " + Contador);
 						if (Contador < 8) {
 							EnvRecMsg.EnvString(connect, MsgXML, "text/xml", "200", Verbose);
 						}
 						else {
-							EnvRecMsg.EnvString(connect, Mensagem.XML01Falha(0), "text/xml", "200", Verbose);
+							EnvRecMsg.EnvString(connect, Msg.MontaXMLFalha(0), "text/xml", "200", Verbose);
 						}
 					}
 				} // else if (Requisicao.equals("/") || Requisicao.equals("/?")) {
@@ -255,25 +258,19 @@ public class ServHTTPMain implements Runnable {
 												
 						if (TipoMsg.equals("application/octet-stream")) {  // Se é mensagem do tipo binária
 							
-							int[] MsgBinRec = new int[512];
+							int[] MsgBin = new int[512];
 							for (int i = 0; i < TamanhoMsg; i++){
-								MsgBinRec[i] = ByteIn.read();           // Recebe os bytes e carrega no buffer
+								MsgBin[i] = ByteIn.read();           // Recebe os bytes e carrega no buffer
 							}
 							
-							int Byte0 = MsgBinRec[0];
-							int Byte1 = MsgBinRec[1];
-							boolean MsgBinOK = false;
-							if ((Byte0 == 0x60) && (Byte1 == 0x45)) {   // Se recebeu mensagem CoAP válida,
-								Mensagem.LeEstMedsPayload(MsgBinRec);   // le as variaveis
-								MsgBinOK = true;
-							}
-							if (MsgBinOK) {                             // Se a mensagem CoAP recebida é válida,
-								if (Mensagem.getEstCom1() == 1) {       // e se a comunicacao com o programa de atualização está OK,
-									MsgXML = Mensagem.XML01();          // monta a mensagem XML
-									MsgXML = MsgXML + " ";
+							if ((MsgBin[0] == 0x60) && (MsgBin[1] == 0x45)) {  // Se recebeu mensagem CoAP válida,
+								Msg.CarregaVariaveis(MsgBin);
+								
+								if (Msg.getEstCom1() == 1) {                   // Se a comunicacao com o programa de atualização está OK,
+									MsgXML = Msg.MontaXML();                   // monta a mensagem XML para enviar ao Navegador
 								}
 								else {                        		    // Se a comunicacao com o Atualizador está em falha,
-									Mensagem.XML01Falha(1);     		// monta a mensagem XML de falha
+									Msg.MontaXMLFalha(1);     		    // monta a mensagem XML de falha para enviar ao Navegador
 								}
 								Util.Terminal("Recebida Mensagem Binária de Atualizacao com " + TamanhoMsg + " Bytes", false, Verbose);
 								
