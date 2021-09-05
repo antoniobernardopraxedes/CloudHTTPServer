@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 //                                                                                                                    *
 // Autor: Antonio Bernardo de Vasconcellos Praxedes                                                                   *
 //                                                                                                                    *  
-// Data: 02/09/2021                                                                                                   *
+// Data: 05/09/2021                                                                                                   *
 //                                                                                                                    *
 // Nome da Classe: HTTPSrvCloud                                                                                       *
 //                                                                                                                    *
@@ -32,6 +32,7 @@ public class ServHTTPMain implements Runnable {
 	private static String Caminho = "";
 	private static String CaminhoNuvem = "/home/bernardo/Executavel/";
 	private static String CaminhoLocal = "/home/antonio/Workspace/Recursos/";
+	private static boolean EstCom1;
 	
 	private Socket connect;
 				
@@ -170,7 +171,7 @@ public class ServHTTPMain implements Runnable {
 			boolean RecReqValida = false;
 			Util.Terminal("Método: " + method + "  -  Arquivo Requisitado: " + ArquivoReq, false, Verbose);
 			
-			Mensagem Msg = new Mensagem();
+			//Mensagem Msg = new Mensagem();
 			
 			if (method.equals("GET")) {  // Trata o método GET
 				RecMetodoValido = true;
@@ -229,10 +230,15 @@ public class ServHTTPMain implements Runnable {
 						Contador = Contador + 1;
 						System.out.println("Contador = " + Contador);
 						if (Contador < 8) {
-							EnvRecMsg.EnvString(connect, MsgXML, "text/xml", "200", Verbose);
+							if (EstCom1) {
+								EnvRecMsg.EnvString(connect, Mensagem.MontaXML(), "text/xml", "200", Verbose);
+							}
+							else {
+								EnvRecMsg.EnvString(connect, Mensagem.MontaXMLFalha(1), "text/xml", "200", Verbose);
+							}
 						}
 						else {
-							EnvRecMsg.EnvString(connect, Msg.MontaXMLFalha(0), "text/xml", "200", Verbose);
+							EnvRecMsg.EnvString(connect, Mensagem.MontaXMLFalha(0), "text/xml", "200", Verbose);
 						}
 					}
 				} // else if (Requisicao.equals("/") || Requisicao.equals("/?")) {
@@ -258,26 +264,18 @@ public class ServHTTPMain implements Runnable {
 												
 						if (TipoMsg.equals("application/octet-stream")) {  // Se é mensagem do tipo binária
 							
-							int[] MsgBin = new int[512];
-							for (int i = 0; i < TamanhoMsg; i++){
-								MsgBin[i] = ByteIn.read();           // Recebe os bytes e carrega no buffer
-							}
+							byte[] MsgBin = new byte[TamanhoMsg];
+							ByteIn.read(MsgBin);                   // Recebe os bytes e carrega no buffer
+							
 							
 							if ((MsgBin[0] == 0x60) && (MsgBin[1] == 0x45)) {  // Se recebeu mensagem CoAP válida,
-								Msg.CarregaVariaveis(MsgBin);
+								EstCom1 = Mensagem.CarregaVariaveis(MsgBin);
 								
-								if (Msg.getEstCom1() == 1) {                   // Se a comunicacao com o programa de atualização está OK,
-									MsgXML = Msg.MontaXML();                   // monta a mensagem XML para enviar ao Navegador
-								}
-								else {                        		    // Se a comunicacao com o Atualizador está em falha,
-									Msg.MontaXMLFalha(1);     		    // monta a mensagem XML de falha para enviar ao Navegador
-								}
 								Util.Terminal("Recebida Mensagem Binária de Atualizacao com " + TamanhoMsg + " Bytes", false, Verbose);
 								
 								// Responde com mensagem de XML de comando
 								String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 								StrComando = StrComando + "<CMD></CMD>";
-								//EnvMsgStringTxt(StrComando, "text/xml", "200");
 								EnvRecMsg.EnvString(connect, StrComando, "text/xml", "200", Verbose);
 								Contador = 0;
 							}

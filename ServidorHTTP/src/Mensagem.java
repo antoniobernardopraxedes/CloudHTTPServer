@@ -4,166 +4,155 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.net.Socket;
 
-//*****************************************************************************************************************
-//                                                                                                                *
-// Autor: Antonio Bernardo de Vasconcellos Praxedes                                                               *
-//                                                                                                                * 
-// Data: 03/09/2021                                                                                               *
-//                                                                                                                *
-// Classe: Mensagem                                                                                               *
-//                                                                                                                *
-// Atributos: variáveis de supervisão e controle                                                                  *
-//                                                                                                                *
-// Métodos: montagem de mensagens em formato XML para enviar ao navegador                                         *
-//                                                                                                                *
-//*****************************************************************************************************************
+//*********************************************************************************************************************
+//                                                                                                                    *
+// Autor: Antonio Bernardo de Vasconcellos Praxedes                                                                   *
+//                                                                                                                    *
+// Data: 05/09/2021                                                                                                   *
+//                                                                                                                    *
+// Classe: Mensagem                                                                                                   *
+//                                                                                                                    *
+//*********************************************************************************************************************
 //
 public class Mensagem {
 
-	private String ComRecHTTP;
-	private String MsgXML;
-
+	private static String ComRecHTTP;
+	private static String MsgXML;
+	
+	// Data e Hora
+	private static byte Hora;
+	private static byte Minuto;
+	private static byte Segundo;
+	private static byte Dia;
+	private static byte Mes;
+	private static byte Ano;
+		
 	// Estados Gerais
-	private int Est24Vcc;
-	private int EstRede;
-	private int EstCom1;
-	private int MdOp;
-	private int MdCom;
-	private int MdCtrl1;
-	private int MdCtrl;
-	private int Carga1;
-	private int Carga2;
-	private int Carga3;
-	private int Carga4;
-	private int HabCom;
-	private int EstadoInversor1;
-	private int EstadoInversor2;
-	private int EstadoCarga3;
-	private  int CT2Inv;
-	private  int CT1Inv;
-	private  int CT3Inv;
-	private  int UTR1Com;
-	private  int UTR2Com;
-	private  int CDBat;
-	private  int FonteCC1Ligada;
-	private  int FonteCC2Ligada;
+	private static boolean EstRede;
+	private static boolean MdOp;
+	private static boolean MdCom;
+	private static boolean MdCtrl1;
+	private static boolean MdCtrl;
+	private static boolean Carga1;
+	private static boolean Carga2;
+	private static boolean Carga3;
+	private static boolean Carga4;
+	private static boolean HabCom;
+	private static boolean EstadoInversor1;
+	private static boolean EstadoInversor2;
+	private static boolean EstadoCarga3;
+	private static boolean CT2Inv;
+	private static boolean CT1Inv;
+	private static boolean CT3Inv;
+	private static boolean CDBat;
+	private static boolean FonteCC1Ligada;
+	private static boolean FonteCC2Ligada;
+	
+	// Estados de Comunicação
+	private static boolean EstCom1;
+	private static boolean UTR1Com;
+	private static boolean UTR2Com;
+	private static boolean EstComUTR;
+	private static boolean EstComCC1;
+	private static boolean EstComCC2;
 	
 	// Medidas Gerais
-	private  int Icarga3;       // Corrente Carga 3 (Geladeira)
-	private  int VRede;         // Tensão da Rede
-	private  int VBat;          // Tensão do Banco de Baterias
-	private  int VMBat;         // Tensão Média Estendida do Banco de Baterias
-	private  int ICircCC;       // Corrente Total dos Circuitos CC
-	private  int WCircCC;       // Potência Total dos Circuitos CC
-	private  int ITotCg;        // Corrente Total Consumida pelas Cargas
-	private  int WTotCg;        // Potência Total Consumida pelas Cargas
-	private  int IFonteCC;      // Corrente de Saída da Fonte CC
-	private  int WFonteCC;      // Potência de Saída da Fonte CC
-	private  int IBat;          // Corrente de Carga / Descarga do Banco de Baterias
-	private  int WBat;          // Potência de Carga / Descarga do Banco de Baterias
-	private  int TBat;          // Temperatura do Banco de Baterias
-	private  int SDBat;         // Valor de Saude das Baterias
-	private  int IFontesCC12;   // Corrente de Saída das Fontes CC1 e CC2
+	private static int Icarga3;       // Corrente Carga 3 (Geladeira)
+	private static int VRede;         // Tensão da Rede
+	private static int VBat;          // Tensão do Banco de Baterias
+	private static int VMBat;         // Tensão Média Estendida do Banco de Baterias
+	private static int ICircCC;       // Corrente Total dos Circuitos CC
+	private static int WCircCC;       // Potência Total dos Circuitos CC
+	private static int ITotCg;        // Corrente Total Consumida pelas Cargas
+	private static int WTotCg;        // Potência Total Consumida pelas Cargas
+	private static int IFonteCC;      // Corrente de Saída da Fonte CC
+	private static int WFonteCC;      // Potência de Saída da Fonte CC
+	private static int IBat;          // Corrente de Carga / Descarga do Banco de Baterias
+	private static int WBat;          // Potência de Carga / Descarga do Banco de Baterias
+	private static int TBat;          // Temperatura do Banco de Baterias
+	private static int SDBat;         // Valor de Saude das Baterias
+	private static int IFontesCC12;   // Corrente de Saída das Fontes CC1 e CC2
 
 	// Estados Água
-	private	 int CircBoia;
-	private  int BoiaCxAzul;
-	private  int CircBomba;
-	private  int AlRedeBomba;
-	private  int BombaLigada;
-	private  int CxAzNvBx;
-	private  int EdCxAzCheia;
-	private  int EstadoCxAz;
+	private static boolean CircBoia;
+	private static boolean BoiaCxAzul;
+	private static boolean CircBomba;
+	private static boolean AlRedeBomba;
+	private static boolean BombaLigada;
+	private static boolean CxAzNvBx;
+	private static boolean EdCxAzCheia;
+	private static int EstadoCxAz;
 
 	// Medidas Água
-	private  int TmpBmbLig;
-	private  int TmpCxAzNvBx;
+	private static int TmpBmbLig;
+	private static int TmpCxAzNvBx;
 
 	// Estados do Inversor 1
-	private  int Iv1Lig;
-	private  int FalhaIv1;
-	private  int SubTensaoInv1;
-	private  int SobreTensaoInv1;
-	private  int SobreCorrInv1;
-	private  int SobreTempDrInv1;
-	private  int SobreTempTrInv1;
-	private  int DjAbIv1;
-	private  int DJEINV1;
+	private static boolean Iv1Lig;
+	private static boolean FalhaIv1;
+	private static boolean SubTensaoInv1;
+	private static boolean SobreTensaoInv1;
+	private static boolean SobreCorrInv1;
+	private static boolean SobreTempDrInv1;
+	private static boolean SobreTempTrInv1;
+	private static boolean DjAbIv1;
+	private static boolean DJEINV1;
 
 	// Estados do Inversor 2
-	private  int Iv2Lig;
-	private  int FalhaIv2;
-	private  int SubTensaoInv2;
-	private  int SobreTensaoInv2;
-	private  int SobreCorrInv2;
-	private  int SobreTempDrInv2;
-	private  int SobreTempTrInv2;
-	private  int DjAbIv2;
-	private  int EstFonteCC;
+	private static boolean Iv2Lig;
+	private static boolean FalhaIv2;
+	private static boolean SubTensaoInv2;
+	private static boolean SobreTensaoInv2;
+	private static boolean SobreCorrInv2;
+	private static boolean SobreTempDrInv2;
+	private static boolean SobreTempTrInv2;
+	private static boolean DjAbIv2;
+	private static boolean EstFonteCC;
 
 	// Medidas da UTR2 - Comunicação com os Controladores de Carga
-	private  int VP12;              // Medida 00: 0x3100 - PV array voltage 1
-	private  int IS12;              // Medida 01: 0x3101 - PV array current 1
-	private  int WS12;              // Medida 02: 0x3102 - PV array power 1
-	private  int VBat1;             // Medida 03: 0x3104 - Battery voltage 1
-	private  int ISCC1;             // Medida 04: 0x3105 - Battery charging current 1
-	private  int WSCC1;             // Medida 05: 0x3106 - Battery charging power 1
-	private  int VP34;              // Medida 08: 0x3100 - PV array voltage 2
-	private  int IS34;              // Medida 09: 0x3101 - PV array current 2
-	private  int WS34;              // Medida 10: 0x3102 - PV array power 2
-	private  int VBat2;             // Medida 11: 0x3104 - Battery voltage 2
-	private  int ISCC2;             // Medida 12: 0x3105 - Battery charging current 2
-	private  int WSCC2;             // Medida 13: 0x3106 - Battery charging power 2 (Med[45])
-	private  int SDCC1;             // Valor de Saude do Controlador de Carga 1
-	private  int SDCC2;             // Valor de Saude do Controlador de Carga 2
+	private static int VP12;              // Medida 00: 0x3100 - PV array voltage 1
+	private static int IS12;              // Medida 01: 0x3101 - PV array current 1
+	private static int WS12;              // Medida 02: 0x3102 - PV array power 1
+	private static int VBat1;             // Medida 03: 0x3104 - Battery voltage 1
+	private static int ISCC1;             // Medida 04: 0x3105 - Battery charging current 1
+	private static int WSCC1;             // Medida 05: 0x3106 - Battery charging power 1
+	private static int VP34;              // Medida 08: 0x3100 - PV array voltage 2
+	private static int IS34;              // Medida 09: 0x3101 - PV array current 2
+	private static int WS34;              // Medida 10: 0x3102 - PV array power 2
+	private static int VBat2;             // Medida 11: 0x3104 - Battery voltage 2
+	private static int ISCC2;             // Medida 12: 0x3105 - Battery charging current 2
+	private static int WSCC2;             // Medida 13: 0x3106 - Battery charging power 2 (Med[45])
+	private static int SDCC1;             // Valor de Saude do Controlador de Carga 1
+	private static int SDCC2;             // Valor de Saude do Controlador de Carga 2
 	
 	// Medidas da Geração
-	private  int ITotGer;           // Corrente Total Gerada
-	private  int WTotGer;           // Potência Total Gerada
+	private static int ITotGer;           // Corrente Total Gerada
+	private static int WTotGer;           // Potência Total Gerada
 
 	// Medidas do Inversor 2
-	private  int IEIv2;             // Corrente de Entrada do Inversor 2
-	private  int WEIv2;             // Potência de Entrada do Inversor 2
-	private  int VSIv2;             // Tensão de Saída do Inversor 2
-	private  int ISInv2;            // Corrente de Saída do Inversor 2
-	private  int WSInv2;            // Potência de Saída do Inversor 2
-	private  int TDInv2;            // Temperatura do Driver do Inversor 2
-	private  int TTInv2;            // Temperatura do Transformador do Inversor 2
-	private  int EfIv2;             // Eficiência do Inversor 2
-	private  int SDIv2;             // Saúde do Inversor 2
-	private  int EstrIv2;           // Estresse do Inversor 2
+	private static int IEIv2;             // Corrente de Entrada do Inversor 2
+	private static int WEIv2;             // Potência de Entrada do Inversor 2
+	private static int VSIv2;             // Tensão de Saída do Inversor 2
+	private static int ISInv2;            // Corrente de Saída do Inversor 2
+	private static int WSInv2;            // Potência de Saída do Inversor 2
+	private static int TDInv2;            // Temperatura do Driver do Inversor 2
+	private static int TTInv2;            // Temperatura do Transformador do Inversor 2
+	private static int EfIv2;             // Eficiência do Inversor 2
+	private static int SDIv2;             // Saúde do Inversor 2
+	private static int EstrIv2;           // Estresse do Inversor 2
 
 	// Medidas do Inversor 1
-	private  int IEIv1;             // Corrente de Entrada do Inversor 1
-	private  int WEIv1;             // Potência de Entrada do Inversor 1
-	private  int VSIv1;             // Tensão de Saída do Inversor 1
-	private  int ISInv1;            // Corrente de Saída do Inversor 1
-	private  int WSInv1;            // Potência de Saída do Inversor 1
-	private  int TDInv1;            // Temperatura do Driver do Inversor 1
-	private  int TTInv1;            // Temperatura do Transformador do Inversor 1
-	private  int EfIv1;             // Eficiência do Inversor 1
-	private  int SDIv1;             // Saúde do Inversor 1
-	private  int EstrIv1;           // Estresse do Inversor 1
+	private static int IEIv1;             // Corrente de Entrada do Inversor 1
+	private static int WEIv1;             // Potência de Entrada do Inversor 1
+	private static int VSIv1;             // Tensão de Saída do Inversor 1
+	private static int ISInv1;            // Corrente de Saída do Inversor 1
+	private static int WSInv1;            // Potência de Saída do Inversor 1
+	private static int TDInv1;            // Temperatura do Driver do Inversor 1
+	private static int TTInv1;            // Temperatura do Transformador do Inversor 1
+	private static int EfIv1;             // Eficiência do Inversor 1
+	private static int SDIv1;             // Saúde do Inversor 1
+	private static int EstrIv1;           // Estresse do Inversor 1
 
-	private  int Hora;
-	private  int Minuto;
-	private  int Segundo;
-	private  int Dia;
-	private  int Mes;
-	private  int Ano;
-	private  int EstComUTR;
-	private  int EstComCC1;
-	private  int EstComCC2;
-	
-	
-	public  int getEstCom1() {
-		return EstCom1;
-	}
-
-	public String getMsgXML() {
-		return MsgXML;
-	}
-	
 	
 	//*****************************************************************************************************************
 	//                                                                                                                *
@@ -178,7 +167,7 @@ public class Mensagem {
 	//                                                                                                                *
 	//*****************************************************************************************************************
 	//
-	 public void CarregaVariaveis(int[] receiveData1) {
+	 public static boolean CarregaVariaveis(byte[] receiveData1) {
 		 
 		ComRecHTTP = "Atualiza";
 
@@ -188,55 +177,58 @@ public class Mensagem {
 		Dia = receiveData1[24];
 		Mes = receiveData1[25];
 		Ano = receiveData1[26];
-        EstComUTR = receiveData1[27];
-        EstComCC1 = receiveData1[28];
-        EstComCC2 = receiveData1[29];
-        EstCom1 = receiveData1[30];     // Estado de Comunicação do Conversor com o Concentrador Arduíno
 		
-		// Le as Entradas Digitais
-		DJEINV1 = receiveData1[37];
-		CircBoia = receiveData1[38];
-		BoiaCxAzul = receiveData1[39];
-		CircBomba = receiveData1[40];
-		AlRedeBomba = receiveData1[41];
-		EstRede = receiveData1[42];
-		MdOp = receiveData1[43];
-		MdCom = receiveData1[44];
-		MdCtrl1 = receiveData1[55];
-		MdCtrl = receiveData1[45];
-		Carga1 = receiveData1[46];
-		Carga2 = receiveData1[47];
-		Carga3 = receiveData1[48];
-		Carga4 = receiveData1[49];
-		HabCom = receiveData1[50];
-		EstadoInversor1 = receiveData1[51];
-		EstadoInversor2 = receiveData1[52];
-		EstadoCarga3 = receiveData1[53];
-		BombaLigada = receiveData1[54];
-	
+		// Estados de Comunicação
+		EstCom1 = receiveData1[30] > 0;     // Estado de Comunicação do Atualizador com o Concentrador Arduíno
+		EstComUTR = receiveData1[27] > 0;
+        EstComCC1 = receiveData1[28] > 0;
+        EstComCC2 = receiveData1[29] > 0;
+        		
+		// Le os Estados Digitais
+		DJEINV1 = receiveData1[37] > 0;
+		CircBoia = receiveData1[38] > 0;
+		BoiaCxAzul = receiveData1[39] > 0;
+		CircBomba = receiveData1[40] > 0;
+		AlRedeBomba = receiveData1[41] > 0;
+		EstRede = receiveData1[42] > 0;
+		MdOp = receiveData1[43] > 0;
+		MdCom = receiveData1[44] > 0;
+		MdCtrl1 = receiveData1[55] > 0;
+		MdCtrl = receiveData1[45] > 0;
+		Carga1 = receiveData1[46] > 0;
+		Carga2 = receiveData1[47] > 0;
+		Carga3 = receiveData1[48] > 0;
+		Carga4 = receiveData1[49] > 0;
+		HabCom = receiveData1[50] > 0;
+		EstadoInversor1 = receiveData1[51] > 0;
+		EstadoInversor2 = receiveData1[52] > 0;
+		EstadoCarga3 = receiveData1[53] > 0;
+		BombaLigada = receiveData1[54] > 0;
+		CDBat = receiveData1[68] > 0;
+		CxAzNvBx = receiveData1[69] > 0;
+		EdCxAzCheia = receiveData1[70] > 0;
+		FonteCC2Ligada = receiveData1[71] > 0;
+		FonteCC1Ligada = receiveData1[73] > 0;
+				
 		// Le os Alarmes
-		FalhaIv1 = receiveData1[56];
-		SubTensaoInv1 = receiveData1[57];
-		SobreTensaoInv1 = receiveData1[58];
-		SobreTempDrInv1 = receiveData1[59];
-		SobreTempTrInv1 = receiveData1[60];
-		DjAbIv1 = receiveData1[61];
-		FalhaIv2 = receiveData1[62];
-		SubTensaoInv2 = receiveData1[63];
-		SobreTensaoInv2 = receiveData1[64];
-		SobreTempDrInv2 = receiveData1[65];
-		SobreTempTrInv2 = receiveData1[66];
-		DjAbIv2 = receiveData1[67];
+		FalhaIv1 = receiveData1[56] > 0;
+		SubTensaoInv1 = receiveData1[57] > 0;
+		SobreTensaoInv1 = receiveData1[58] > 0;
+		SobreTempDrInv1 = receiveData1[59] > 0;
+		SobreTempTrInv1 = receiveData1[60] > 0;
+		DjAbIv1 = receiveData1[61] > 0;
+		FalhaIv2 = receiveData1[62] > 0;
+		SubTensaoInv2 = receiveData1[63] > 0;
+		SobreTensaoInv2 = receiveData1[64] > 0;
+		SobreTempDrInv2 = receiveData1[65] > 0;
+		SobreTempTrInv2 = receiveData1[66] > 0;
+		DjAbIv2 = receiveData1[67] > 0;
 		
-		CDBat = receiveData1[68];
-		CxAzNvBx = receiveData1[69];
-		EdCxAzCheia = receiveData1[70];
-		FonteCC2Ligada = receiveData1[71];
+		
 		EstadoCxAz = receiveData1[72];
-		FonteCC1Ligada = receiveData1[73];
 		
-		SobreCorrInv1 = receiveData1[74];
-		SobreCorrInv2 = receiveData1[75];
+		SobreCorrInv1 = receiveData1[74] > 0;
+		SobreCorrInv2 = receiveData1[75] > 0;
     
 		// Le o estado das saidas digitais
 		int NumSd = 32;
@@ -248,21 +240,21 @@ public class Mensagem {
 		}
 	
 		// Carrega as variaveis com os valores das saidas digitais da UTR1
-		Iv1Lig = SD[1];
-		CT2Inv = SD[17];
-		CT1Inv = SD[0];
-		CT3Inv = SD[2];
-		Iv2Lig = SD[10];
-		EstFonteCC = SD[16];
+		Iv1Lig = SD[1] > 0;
+		CT2Inv = SD[17] > 0;
+		CT1Inv = SD[0] > 0;
+		CT3Inv = SD[2] > 0;
+		Iv2Lig = SD[10] > 0;
+		EstFonteCC = SD[16] > 0;
 	 
 		// Le as medidas de 1 byte da mensagem recebida
-		EfIv1 = receiveData1[144];  // Eficiência do Inversor 1
-		SDIv1 = receiveData1[145];  // Carrega
-		SDIv2 = receiveData1[146];  // Carrega
-		EfIv2 = receiveData1[147];  // Eficiência do Inversor 2
-		SDCC1 = receiveData1[148];
-		SDCC2 = receiveData1[149];
-		SDBat = receiveData1[150];
+		EfIv1 = Util.BytetoInt(receiveData1[144]);  // Eficiência do Inversor 1
+		SDIv1 = Util.BytetoInt(receiveData1[145]);
+		SDIv2 = Util.BytetoInt(receiveData1[146]);
+		EfIv2 = Util.BytetoInt(receiveData1[147]);  // Eficiência do Inversor 2
+		SDCC1 = Util.BytetoInt(receiveData1[148]);
+		SDCC2 = Util.BytetoInt(receiveData1[149]);
+		SDBat = Util.BytetoInt(receiveData1[150]);
 		
 		// Le as Medidas de 2 bytes da mensagem recebida
 		int NumMed = 48;
@@ -339,111 +331,73 @@ public class Mensagem {
 		else {
 			EfIv2 = 0;
 		}
+		return EstCom1;
 		
 	} // Fim do Método
 	
 	
-	//**********************************************************************************************************************
-	// Nome do Método: MontaXML                                                                                            *
-    //	                                                                                                                   *
-	// Data: 04/09/2021                                                                                                    *
-	//                                                                                                                     *
-	// Funcao: lê as variáveis de supervisão, carrega nas variáveis, calcula o valor caso seja necessário, e monta uma     *
-	//         string contendo uma mensagem em formato XML com todos os valores das variáveis atualizados.                 *
-	//                                                                                                                     *
-	// Entrada: array int[] contendo a mensagem binária em protocolo CoAP                                                  *                                                                                                    *
-	//                                                                                                                     *
-	// Saida: string com a mensagem XML de resposta                                                                        *
-    //	                                                                                                                   *
-	//**********************************************************************************************************************
+	//******************************************************************************************************************
+	// Nome do Método: MontaXML                                                                                        *
+    //	                                                                                                               *
+	// Data: 04/09/2021                                                                                                *
+	//                                                                                                                 *
+	// Funcao: lê as variáveis de supervisão, carrega nas variáveis, calcula o valor caso seja necessário, e monta     *
+	//         uma string contendo uma mensagem em formato XML com todos os valores das variáveis atualizados.         *
+	//                                                                                                                 *
+	// Entrada: não tem                                                                                                *                                                                                                    *
+	//                                                                                                                 *
+	// Saida: string com a mensagem XML de resposta                                                                    *
+    //	                                                                                                               *
+	//******************************************************************************************************************
 	//
-	public  String MontaXML() {
-		
-		//String EndIP1;
-		String StrEstCom1;
-		String StrEstComUTR;
-		String StrEstComCC1;
-		String StrEstComCC2;
-		String StrMdOp;
-		String StrMdCom;
-		String StrMdCtrl1;
-		String StrMdCtrl;
-		String StrCT2Inv;
-		String StrCT1Inv;
-		String StrCT3Inv;
-		String StrEstCxAzul;
-		String StrNivCxAzul;
-		String StrEstAlimBoia;
-		String StrAlRedeBomba;
-		String StrIv1Lig;
-		String StrEstBomba;
-		String StrEstFonteCC1;
-		String StrEstFonteCC2;
-		String StrEstIv2;
-		String StrEstVSIv2;
-		String StrEstTDIv2;
-		String StrEstTTIv2;
-		String StrEstIv1;
-		String StrEstVSIv1;
-		String CorTDIv2;
-		String CorTTIv2;
-		String CorTDIv1;
-		String CorTTIv1;
-		String StrEstRede;
-		String StrEstValCg3;
-		String StrEstValVBat;
-		String StrEstIBat;
-		String CorTBat;
-		String StrSaudeBat;
-		String StrValVP12;
-		String StrValVP34;
-		
+	public  static String MontaXML() {
+	
 		// Estados de Comunicacao
-		StrEstCom1 = "Falha";
-		if (EstCom1 == 1) { StrEstCom1 = "Normal"; }
+		String StrEstCom1 = "Falha";
+		if (EstCom1) { StrEstCom1 = "Normal"; }
 			
-		StrEstComUTR = "Falha";
-		if (EstComUTR == 1) { StrEstComUTR = "Normal"; }
+		String StrEstComUTR = "Falha";
+		if (EstComUTR) { StrEstComUTR = "Normal"; }
 		
-		StrEstComCC1 = "Falha";
-		if (EstComCC1 == 1) { StrEstComCC1 = "Normal"; }
+		String StrEstComCC1 = "Falha";
+		if (EstComCC1) { StrEstComCC1 = "Normal"; }
 		
-		StrEstComCC2 = "Falha";
-		if (EstComCC2 == 1) { StrEstComCC2 = "Normal"; }
+		String StrEstComCC2 = "Falha";
+		if (EstComCC2) { StrEstComCC2 = "Normal"; }
 		
 		// Estados Gerais
-		StrMdOp = "Economia";
-		if (MdOp == 1) {	StrMdOp = "Normal";	}
+		String StrMdOp = "Economia";
+		if (MdOp) {	StrMdOp = "Normal";	}
 
-		StrMdCom = "Local";
-		if (MdCom == 1) { StrMdCom = "Remoto"; }
+		String StrMdCom = "Local";
+		if (MdCom) { StrMdCom = "Remoto"; }
 		
-		StrMdCtrl1 = "Manual";
-		if (MdCtrl1 == 1) { StrMdCtrl1 = "Automatico"; }
+		String StrMdCtrl1 = "Manual";
+		if (MdCtrl1) { StrMdCtrl1 = "Automatico"; }
 		
-		StrMdCtrl = "Manual";
-		if (MdCtrl == 1) { StrMdCtrl = "Automatico"; }
+		String StrMdCtrl = "Manual";
+		if (MdCtrl) { StrMdCtrl = "Automatico"; }
 
-		StrCT2Inv = "Rede";                // Fonte de Energia Carga 1
-		if (CT2Inv == 1) {
+		String StrCT2Inv = "Rede";                // Fonte de Energia Carga 1
+		if (CT2Inv) {
 			StrCT2Inv = "Inversor 2"; 
 		}
 		else {
-			if (Carga1 == 1) {
+			if (Carga1) {
 				StrCT2Inv = "Rede (Hab)";
 			}
 		}
 		
-		StrCT1Inv = "Rede";                // Fonte de Energia Carga 2
-		if (CT1Inv == 1) { StrCT1Inv = "Inversor 2"; }
-		else { if (Carga2 == 1) { StrCT1Inv = "Rede (Hab)"; } }
+		String StrCT1Inv = "Rede";                // Fonte de Energia Carga 2
+		if (CT1Inv) { StrCT1Inv = "Inversor 2"; }
+		else { if (Carga2) { StrCT1Inv = "Rede (Hab)"; } }
 		
-		StrCT3Inv = "Rede";                // Fonte de Energia Carga 3
-		if (CT3Inv == 1) { StrCT3Inv = "Inversor 2"; }
-		else { if (Carga3 == 1) { StrCT3Inv = "Rede (Hab)"; } }
+		String StrCT3Inv = "Rede";                // Fonte de Energia Carga 3
+		if (CT3Inv) { StrCT3Inv = "Inversor 2"; }
+		else { if (Carga3) { StrCT3Inv = "Rede (Hab)"; } }
 		
-		StrEstCxAzul = "";
-		StrNivCxAzul = "";
+		String StrEstCxAzul = "";
+		String StrNivCxAzul = "";
 		switch (EstadoCxAz) {
 		
 			case 0:  //  EstadoCxAz = 0 => Estado da Caixa Azul = Indefinido 
@@ -477,42 +431,42 @@ public class Mensagem {
 			break;
 		}
 		
-		StrEstAlimBoia = "";
-		if (CircBoia == 1) { StrEstAlimBoia = "Ligado"; }
+		String StrEstAlimBoia = "";
+		if (CircBoia) { StrEstAlimBoia = "Ligado"; }
 		else { StrEstAlimBoia = "Desligado"; }
 		
-		StrAlRedeBomba = "";
-		if (EstRede == 1) {
-			if (AlRedeBomba == 1) { StrAlRedeBomba = "Ligado"; }
+		String StrAlRedeBomba = "";
+		if (EstRede) {
+			if (AlRedeBomba) { StrAlRedeBomba = "Ligado"; }
 			else { StrAlRedeBomba = "Desligado"; }
 		}
 		else {
 			StrAlRedeBomba = "Falta CA";
 		}
 		
-		StrIv1Lig = "Rede";                		// Fonte de energia da bomba
-		if (Iv1Lig == 1) {
+		String StrIv1Lig = "Rede";                		// Fonte de energia da bomba
+		if (Iv1Lig) {
 			StrIv1Lig = "Inversor 1"; 
 		}
 		else {
-			if (Carga4 == 1) {
+			if (Carga4) {
 				StrIv1Lig = "Rede (Hab)";	
 			}
 		}
 		
-		StrEstBomba = "Desligada";              // Estado da alimentação da bomba
-		if (CircBomba == 1) { StrEstBomba = "Ligada"; }
+		String StrEstBomba = "Desligada";              // Estado da alimentação da bomba
+		if (CircBomba) { StrEstBomba = "Ligada"; }
 		
-		StrEstFonteCC1 = "";            		// Estado das Fontes CC1 e CC2
-		StrEstFonteCC2 = "";
-		if (EstRede == 1) {                 	// Se a tensao da Rede esta OK,
-			if (FonteCC1Ligada == 1) {      	// e se a fonte CC1 está fornecendo tensão,
+		String StrEstFonteCC1 = "";            		// Estado das Fontes CC1 e CC2
+		String StrEstFonteCC2 = "";
+		if (EstRede) {                 	// Se a tensao da Rede esta OK,
+			if (FonteCC1Ligada) {      	// e se a fonte CC1 está fornecendo tensão,
 				StrEstFonteCC1 = "Ligada";     	// Carrega a mensagem de que a fonte CC1 está ligada
 			}
 			else {                             	// Se a fonte CC1 não está fornecendo tensão,
 				StrEstFonteCC1 = "Desligada";  	// Carrega a mensagem de que a fonte CC1 está desligada
 			}
-			if (FonteCC2Ligada == 1) {      	// e se a fonte CC2 está fornecendo tensão,
+			if (FonteCC2Ligada) {      	// e se a fonte CC2 está fornecendo tensão,
 				StrEstFonteCC2 = "Ligada";     	// Carrega a mensagem de que a fonte CC1 está ligada
 			}
 			else {                             	// Se a fonte CC1 não está fornecendo tensão,
@@ -520,13 +474,13 @@ public class Mensagem {
 			}
 		}
 		else {                                 	// Se falta CA,
-			if (FonteCC1Ligada == 0) {      	// e se a saida da fonte está sem tensao,
+			if (FonteCC1Ligada) {      	// e se a saida da fonte está sem tensao,
 				StrEstFonteCC1 = "Falta CA";   	// Carrega a mensagem de que Falta CA
 			}
 			else {
 				StrEstFonteCC1 = "Falha";      	// Carrega a mensagem de Falha
 			}
-			if (FonteCC2Ligada == 0) {      	// e se a saida da fonte está sem tensao,
+			if (FonteCC2Ligada) {      	// e se a saida da fonte está sem tensao,
 				StrEstFonteCC2 = "Falta CA";   	// Carrega a mensagem de que Falta CA
 			}
 			else {
@@ -534,9 +488,9 @@ public class Mensagem {
 			}
 		}
 		
-		StrEstIv2 = "Desligado";
-		StrEstVSIv2 = "      ";
-		if (Iv2Lig == 1) { 
+		String StrEstIv2 = "Desligado";
+		String StrEstVSIv2 = "      ";
+		if (Iv2Lig) { 
 			StrEstIv2 = "Ligado";
 			if (VSIv2 < 21000) { StrEstVSIv2 = "Baixa"; }
 			if ((VSIv2 >= 21000) && (VSIv2 <= 22500)) { StrEstVSIv2 = "Normal"; }
@@ -549,19 +503,19 @@ public class Mensagem {
 			WSInv2 = 0;
 		}
 		
-		StrEstTDIv2 = "          ";
+		String StrEstTDIv2 = "          ";
 		if (TDInv2 < 4600) { StrEstTDIv2 = "Normal";	}
 		if ((TDInv2 >= 4600) && (TDInv2 < 5000)) { StrEstTDIv2 = "Alta"; }
 		if (TDInv2 >= 5000) { StrEstTDIv2 = "Muito Alta"; }
 		
-		StrEstTTIv2 = "          ";
+		String StrEstTTIv2 = "          ";
 		if (TTInv2 < 4600) { StrEstTTIv2 = "Normal";	}
 		if ((TTInv2 >= 4600) && (TTInv2 < 5000)) { StrEstTTIv2 = "Alta"; }
 		if (TTInv2 >= 5000) { StrEstTTIv2 = "Muito Alta"; }
 		
-		StrEstIv1 = "Desligado";
-		StrEstVSIv1 = "      ";
-		if (Iv1Lig == 1) {
+		String StrEstIv1 = "Desligado";
+		String StrEstVSIv1 = "      ";
+		if (Iv1Lig) {
 			StrEstIv1 = "Ligado";
 			if (VSIv1 < 17500) { StrEstVSIv1 = "Baixa"; }
 			if ((VSIv1 >= 17500) && (VSIv1 <= 20000)) { StrEstVSIv1 = "Normal"; }
@@ -574,49 +528,49 @@ public class Mensagem {
 			WSInv1 = 0;
 		}
 		
-		CorTDIv2 = "";
+		String CorTDIv2 = "";
 		if (TDInv2 >= 5000) { CorTDIv2 = "style='color:red;'"; }
-		CorTTIv2 = "";
+		String CorTTIv2 = "";
 		if (TTInv2 >= 5000) { CorTTIv2 = "style='color:red;'"; }
 		
-		CorTDIv1 = "";
+		String CorTDIv1 = "";
 		if (TDInv1 >= 5000) { CorTDIv1 = "style='color:red;'"; }
-		CorTTIv1 = "";
+		String CorTTIv1 = "";
 		if (TTInv1 >= 5000) { CorTTIv1 = "style='color:red;'"; }
 		
-		StrEstRede = "";
-		if (EstRede == 1) {
+		String StrEstRede = "";
+		if (EstRede) {
 			if (VRede > 19000) { StrEstRede = "Normal"; }
 			else { StrEstRede = "(Baixa)"; }
 		}
 		else { StrEstRede = "Falta CA"; }
 		
-		StrEstValCg3 = "         ";
+		String StrEstValCg3 = "         ";
 		if (Icarga3 < 100) { StrEstValCg3 = "Deslig"; }
 		if (Icarga3 > 400) { StrEstValCg3 = "Ligada"; }
 		
-		StrEstValVBat = "           ";
+		String StrEstValVBat = "           ";
 		if (VBat < 2300) { StrEstValVBat = "Baixa"; }
 		if ((VBat >= 2300) && (VBat < 2640)) { StrEstValVBat = "Carga/Desc.";	}		
 		if ((VBat >= 2640) && (VBat <= 2760)) { StrEstValVBat = "Flutuação"; }
 		if ((VBat > 2760) && (VBat < 2900)) { StrEstValVBat = "Equalização"; }
 		if (VBat > 2900) { StrEstValVBat = "Alta"; }
 		
-		StrEstIBat = "        ";
-		if (CDBat == 0) { StrEstIBat = "Descarga"; }
+		String StrEstIBat = "        ";
+		if (CDBat) { StrEstIBat = "Descarga"; }
 		else { StrEstIBat = "Carga"; }
 		
-		CorTBat = "";
+		String CorTBat = "";
 		if (TBat > 4000) { CorTBat = "style='color:red;'"; }
 		
-		StrSaudeBat = "Normal";
+		String StrSaudeBat = "Normal";
 		if (SDBat < 85) { StrSaudeBat = "Atenção"; }
 		
-		StrValVP12 = "      ";
+		String StrValVP12 = "      ";
 		if (VP12 < 3000) { StrValVP12 = "Baixa"; }
 		if (VP12 >= 3000) { StrValVP12 = "Normal"; }
 		
-		StrValVP34 = "      ";
+		String StrValVP34 = "      ";
 		if (VP34 < 3000) { StrValVP34 = "Baixa"; }
 		if (VP34 >= 3000) { StrValVP34 = "Normal"; }
 		
@@ -799,7 +753,7 @@ public class Mensagem {
     //	                                                                                                                   *
 	//**********************************************************************************************************************
 	//
-	public  String MontaXMLFalha(int Opcao) {
+	public static String MontaXMLFalha(int Opcao) {
 		
 		// Carrega na StringXML Array os Tags de Níveis 0,1,e 2 e as variáveis de supervisão
 		String MsgXMLArray[][][][] = new String[1][10][30][2];
@@ -984,7 +938,7 @@ public class Mensagem {
 	//	                                                                                                                        *
 	//***************************************************************************************************************************
 	//
-	 String StringXML(String MsgXMLArray[][][][]) {
+	 private static String StringXML(String MsgXMLArray[][][][]) {
 		String MsgXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";  // Imprime a linha de Versão e Codificação de Caracteres  
 		MsgXML = MsgXML + "<" + MsgXMLArray[0][0][0][0] + ">\n";         // Imprime a Tag de Nivel 0
 
