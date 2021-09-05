@@ -230,7 +230,7 @@ public class ServHTTPMain implements Runnable {
 						Contador = Contador + 1;
 						System.out.println("Contador = " + Contador);
 						if (Contador < 8) {
-							if (EstCom1) {
+							if (Mensagem.getEstCom1()) {
 								EnvRecMsg.EnvString(connect, Mensagem.MontaXML(), "text/xml", "200", Verbose);
 							}
 							else {
@@ -266,10 +266,9 @@ public class ServHTTPMain implements Runnable {
 							
 							byte[] MsgBin = new byte[TamanhoMsg];
 							ByteIn.read(MsgBin);                   // Recebe os bytes e carrega no buffer
-							
-							
+														
 							if ((MsgBin[0] == 0x60) && (MsgBin[1] == 0x45)) {  // Se recebeu mensagem CoAP válida,
-								EstCom1 = Mensagem.CarregaVariaveis(MsgBin);
+								Mensagem.CarregaVariaveis(MsgBin);
 								
 								Util.Terminal("Recebida Mensagem Binária de Atualizacao com " + TamanhoMsg + " Bytes", false, Verbose);
 								

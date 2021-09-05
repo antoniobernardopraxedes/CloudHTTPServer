@@ -161,7 +161,7 @@ public class EnvRecMsg {
             clientSocket.send(sendPacket);
             Util.Terminal("Enviada Requisicao CoAP para o Controlador", false, Verbose);
 
-            // Espera a Mensagem CoAP de Resposta. Se a mensagem de resposta  for recebida, carrega nas variáveis
+            // Espera a Mensagem CoAP de Resposta. Se a mensagem de resposta  for recebida, carrega nas variáveis.
             try {
                 clientSocket.receive(receivePacket);
                 MsgRecCoAP[30] = 1;
@@ -181,10 +181,11 @@ public class EnvRecMsg {
     }
 
     //*****************************************************************************************************************
-    // Nome da Rotina: LeEstMedsPayload()                                                                             *
+    // Nome do Método: LeEstMedsPayload()                                                                             *
     //                                                                                                                *
-    // Funcao: lê as informações dos estados e medidas recebidas do Concentrador Arduino Mega na mensagem em          *
-    //         formato CoAP-OSA-CBM                                                                                   *
+    // Funcao: lê as informações dos estados, saídas digitais e medidas recebidas de uma mensagem binária em          *
+    //         protocolo CoAP recebida do equipamento Concentrador. Este método é usado no acesso local pelo          *
+    //         método EnvRecMsg.CoAPUDP                                                                               *
     //                                                                                                                *
     // Medidas (64): bytes 160 a 288 - 2 bytes por medida                                                             *
     //                                                                                                                *
@@ -196,21 +197,23 @@ public class EnvRecMsg {
     //
     static byte[] LeEstMedsPayload(byte[] MsgRecCoAP, int TamMsgSrv) {
 
-        byte[] MsgEnvSrv = new byte[TamMsgSrv];  // Array com a mensagem que vai para o Servidor HTTP
+        byte[] MsgEnvSrv = new byte[TamMsgSrv];  // Array com a mensagem que vai ser enviada para o Servidor HTTP
 
-        // Le as Informações de Estado do Concentrador Arduino Mega
+        // Carrega as Informações de Estado nas Variáveis
         byte Hora = MsgRecCoAP[21];
         byte Minuto = MsgRecCoAP[22];
         byte Segundo = MsgRecCoAP[23];
         byte Dia = MsgRecCoAP[24];
         byte Mes = MsgRecCoAP[25];
         byte Ano = MsgRecCoAP[26];
+        
+        // Carrega as Informações de Estado de Comunicação nas Variáveis
         byte EstComUTR = MsgRecCoAP[27];
         byte EstComCC1 = MsgRecCoAP[28];
         byte EstComCC2 = MsgRecCoAP[29];
         byte EstCom1 = MsgRecCoAP[30];
 
-        // Le as Entradas Digitais recebidas na mensagem recebida do Concentrador Arduino Mega
+        // Carrega as Informações de Estado nas Variáveis
         byte DJEINV1 = MsgRecCoAP[37];
         byte CircBoia = MsgRecCoAP[38];
         byte BoiaCxAzul = MsgRecCoAP[39];
@@ -231,7 +234,7 @@ public class EnvRecMsg {
         byte EstadoCarga3 = MsgRecCoAP[53];
         byte BombaLigada = MsgRecCoAP[54];
 
-        // Le os Alarmes da mensagem recebida do Concentrador Arduino Mega
+     // Carrega as Informações de Alarme nas Variáveis
         byte FalhaIv1 = MsgRecCoAP[56];
         byte SubTensaoInv1 = MsgRecCoAP[57];
         byte SobreTensaoInv1 = MsgRecCoAP[58];
@@ -308,16 +311,16 @@ public class EnvRecMsg {
         int WSCC2 = Med[31];         // 0x3106 - Battery charging power 2 (VG.Med[45])
 
         // Leitura e Cálculo das Medidas referentes ao Inversor 1
-        int IEIv1 = Med[12];         					// Corrente de Entrada do Inversor 1 (15)
+        int IEIv1 = Med[12];         				// Corrente de Entrada do Inversor 1 (15)
         int WEIv1 = (VBat * IEIv1) / 100;			// Potência de Entrada do Inversor 1 (VG.Med[41])
-        int VSIv1 = Med[4];          					// Tensão de Saída do Inversor 1
-        int ISInv1 = (7 * Med[10]) / 10;        			// Corrente de Saída do Inversor 1 (13)
+        int VSIv1 = Med[4];          				// Tensão de Saída do Inversor 1
+        int ISInv1 = (7 * Med[10]) / 10;        	// Corrente de Saída do Inversor 1 (13)
         int WSInv1 = (VSIv1 * ISInv1) / 1000;		// Potencia de Saida do Inversor 1 (VG.Med[42])
-        int TDInv1 = Med[8];         					// Temperatura do Driver do Inversor 1 (2)
-        int TTInv1 = Med[9];         					// Temperatura do Transformador do Inversor 1 (7)
+        int TDInv1 = Med[8];         				// Temperatura do Driver do Inversor 1 (2)
+        int TTInv1 = Med[9];         				// Temperatura do Transformador do Inversor 1 (7)
         int EfIv1 = 0;
-        if (WEIv1 > 2000) {                          // Se o Inversor 1 está ligado,
-            EfIv1 = (100*WSInv1)/WEIv1;		// calcula a Eficiência do Inversor 1
+        if (WEIv1 > 2000) {                         // Se o Inversor 1 está ligado,
+            EfIv1 = (100*WSInv1)/WEIv1;		        // calcula a Eficiência do Inversor 1
         }
         else {
             EfIv1 = 0;
@@ -325,29 +328,29 @@ public class EnvRecMsg {
         int SDIv1 = 0;
 
         // Leitura e Cálculo das Medidas referentes ao Inversor 2
-        double IEInversor2 = 838 * Med[15];  //  838
-        int IEIv2 = (int)(IEInversor2 / 1000); 			 // Corrente de Entrada do Inversor 2 (12)
-        int WEIv2 = (VBat * IEIv2) / 100;         	 // Potencia de Entrada do Inversor 2 (VG.Med[38])
-        int VSIv2 = Med[6];          					 // Tensão de Saída do Inversor 2
+        double IEInversor2 = 838 * Med[15];         //  838
+        int IEIv2 = (int)(IEInversor2 / 1000); 		// Corrente de Entrada do Inversor 2 (12)
+        int WEIv2 = (VBat * IEIv2) / 100;         	// Potencia de Entrada do Inversor 2 (VG.Med[38])
+        int VSIv2 = Med[6];          				// Tensão de Saída do Inversor 2
         int ISInv2 = Med[13];
-        int WSInv2 = (VSIv2 * ISInv2) / 1000;       	 // Potencia de Saida do Inversor 2 (VG.Med[39])
-        int TDInv2 = Med[2];         					 // Temperatura do Driver do Inversor 2 (8)
-        int TTInv2 = Med[7];         					 // Temperatura do Transformador do Inversor 2 (9)
+        int WSInv2 = (VSIv2 * ISInv2) / 1000;       // Potencia de Saida do Inversor 2 (VG.Med[39])
+        int TDInv2 = Med[2];         				// Temperatura do Driver do Inversor 2 (8)
+        int TTInv2 = Med[7];         				// Temperatura do Transformador do Inversor 2 (9)
         int EfIv2 = 0;
-        if (WEIv2 > 2000) {                           // Se o Inversor 2 está ligado,
-            EfIv2 = (100*WSInv2) / WEIv2;		 // calcula a Eficiência do Inversor 2
+        if (WEIv2 > 2000) {                         // Se o Inversor 2 está ligado,
+            EfIv2 = (100*WSInv2) / WEIv2;		    // calcula a Eficiência do Inversor 2
         }
         else {
             EfIv2 = 0;
         }
         int SDIv2 = 0;
 
-        int ITotGer = Med[33];       					// Corrente Total Gerada
-        int WCircCC = Med[35];       					// Potencia Consumida pelos Circuitos de 24Vcc
-        int WFonteCC = Med[36];      					// Potencia Fornecida pela Fonte 24Vcc
-        int IBat = Med[37];          					// Corrente de Carga ou Descarga do Banco de Baterias
+        int ITotGer = Med[33];       				// Corrente Total Gerada
+        int WCircCC = Med[35];       				// Potencia Consumida pelos Circuitos de 24Vcc
+        int WFonteCC = Med[36];      				// Potencia Fornecida pela Fonte 24Vcc
+        int IBat = Med[37];          				// Corrente de Carga ou Descarga do Banco de Baterias
         int WBat = (VBat * IBat) / 100;				// Potência de Carga/Descarga do Banco de Baterias
-        ITotGer = ISCC1 + ISCC2;				// Corrente Total Gerada
+        ITotGer = ISCC1 + ISCC2;				    // Corrente Total Gerada
         int WTotGer = WSCC1 + WSCC2;				// Potência Total Gerada
         int ITotCg = IEIv1 + IEIv2 + (ICircCC/10);	// Corrente Total Consumida pelas Cargas
         int WTotCg =  WEIv1 + WEIv2 + WCircCC;		// Potência Total Consumida pelas Cargas
@@ -409,15 +412,15 @@ public class EnvRecMsg {
         MsgEnvSrv[262] = Util.ByteLow(ITotGer);   // CB2Bytes(TempoBmbDesligada, 51);
         MsgEnvSrv[263] = Util.ByteHigh(ITotGer);
 
-        MsgEnvSrv[144] = (byte)EfIv1;  	// Eficiência do Inversor 1
-        //InferenciaFuzzyInv1();            // Calcula a Saude do Inversor 1
-        MsgEnvSrv[145] = (byte)SDIv1;  	// Carrega a Saude do Inversor 1 no Buffer
-        //InferenciaFuzzyInv2();            // Calcula a Saude do Inversor 2
-        MsgEnvSrv[146] = (byte)SDIv2;  	// Carrega a Saude do Inversor 2 no Buffer
-        MsgEnvSrv[147] = (byte)EfIv2;  	// Eficiência do Inversor 2
-        MsgEnvSrv[148] = (byte)SDCC1;  	// Saude do Controlador de Carga 1
-        MsgEnvSrv[149] = (byte)SDCC2;  	// Saude do Controlador de Carga 2
-        MsgEnvSrv[150] = (byte)SDBat;  	// Saude do Banco de Baterias
+        MsgEnvSrv[144] = (byte)EfIv1;  	          // Eficiência do Inversor 1
+        //InferenciaFuzzyInv1();                  // Calcula a Saude do Inversor 1
+        MsgEnvSrv[145] = (byte)SDIv1;  	          // Carrega a Saude do Inversor 1 no Buffer
+        //InferenciaFuzzyInv2();                  // Calcula a Saude do Inversor 2
+        MsgEnvSrv[146] = (byte)SDIv2;  	          // Carrega a Saude do Inversor 2 no Buffer
+        MsgEnvSrv[147] = (byte)EfIv2;  	          // Eficiência do Inversor 2
+        MsgEnvSrv[148] = (byte)SDCC1;  	          // Saude do Controlador de Carga 1
+        MsgEnvSrv[149] = (byte)SDCC2;  	          // Saude do Controlador de Carga 2
+        MsgEnvSrv[150] = (byte)SDBat;  	          // Saude do Banco de Baterias
 
         return MsgEnvSrv;
 

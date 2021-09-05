@@ -152,22 +152,27 @@ public class Mensagem {
 	private static int EfIv1;             // Eficiência do Inversor 1
 	private static int SDIv1;             // Saúde do Inversor 1
 	private static int EstrIv1;           // Estresse do Inversor 1
+	
+	
+	public static boolean getEstCom1() {
+		return EstCom1;
+	}
 
 	
 	//*****************************************************************************************************************
 	//                                                                                                                *
 	// Nome da Método: CarregaVariaveis                                                                               *
 	//                                                                                                                *
-	// Funcao: lê os dados de supervisão em formato binário (protocolo CoAP) e carrega nas variáveis do programa      *
+	// Funcao: lê os dados de supervisão em formato binário (protocolo CoAP) e carrega nas variáveis do programa.     *
+	//         Este método é chamado pela executável da classe ServHTTPMain.                                          *
 	//                                                                                                                *
-	//                                                                                                                *
-	// Entrada: array int[] com a mensagem binária                                                                    *
+	// Entrada: array byte[] com a mensagem binária recebida                                                          *
 	//                                                                                                                *
 	// Saida: nao tem                                                                                                 *
 	//                                                                                                                *
 	//*****************************************************************************************************************
 	//
-	 public static boolean CarregaVariaveis(byte[] receiveData1) {
+	 public static void CarregaVariaveis(byte[] receiveData1) {
 		 
 		ComRecHTTP = "Atualiza";
 
@@ -331,7 +336,6 @@ public class Mensagem {
 		else {
 			EfIv2 = 0;
 		}
-		return EstCom1;
 		
 	} // Fim do Método
 	
@@ -339,10 +343,10 @@ public class Mensagem {
 	//******************************************************************************************************************
 	// Nome do Método: MontaXML                                                                                        *
     //	                                                                                                               *
-	// Data: 04/09/2021                                                                                                *
+	// Data: 05/09/2021                                                                                                *
 	//                                                                                                                 *
-	// Funcao: lê as variáveis de supervisão, carrega nas variáveis, calcula o valor caso seja necessário, e monta     *
-	//         uma string contendo uma mensagem em formato XML com todos os valores das variáveis atualizados.         *
+	// Funcao: lê as variáveis de supervisão (atributos da classe Mensagem), calcula o valor caso seja necessário,     *
+	//         e monta uma string contendo uma mensagem em formato XML com todos os valores das variáveis atualizados. *
 	//                                                                                                                 *
 	// Entrada: não tem                                                                                                *                                                                                                    *
 	//                                                                                                                 *
@@ -380,12 +384,10 @@ public class Mensagem {
 
 		String StrCT2Inv = "Rede";                // Fonte de Energia Carga 1
 		if (CT2Inv) {
-			StrCT2Inv = "Inversor 2"; 
+			StrCT2Inv = "Inversor 2";
 		}
 		else {
-			if (Carga1) {
-				StrCT2Inv = "Rede (Hab)";
-			}
+			if (Carga1) { StrCT2Inv = "Rede (Hab)"; }
 		}
 		
 		String StrCT1Inv = "Rede";                // Fonte de Energia Carga 2
@@ -454,37 +456,37 @@ public class Mensagem {
 			}
 		}
 		
-		String StrEstBomba = "Desligada";              // Estado da alimentação da bomba
+		String StrEstBomba = "Desligada";            // Estado da alimentação da bomba
 		if (CircBomba) { StrEstBomba = "Ligada"; }
 		
-		String StrEstFonteCC1 = "";            		// Estado das Fontes CC1 e CC2
+		String StrEstFonteCC1 = "";            		 // Estado das Fontes CC1 e CC2
 		String StrEstFonteCC2 = "";
-		if (EstRede) {                 	// Se a tensao da Rede esta OK,
-			if (FonteCC1Ligada) {      	// e se a fonte CC1 está fornecendo tensão,
-				StrEstFonteCC1 = "Ligada";     	// Carrega a mensagem de que a fonte CC1 está ligada
+		if (EstRede) {                 	             // Se a tensao da Rede esta OK,
+			if (FonteCC1Ligada) {      	             // e se a fonte CC1 está fornecendo tensão,
+				StrEstFonteCC1 = "Ligada";     	     // Carrega a mensagem de que a fonte CC1 está ligada
 			}
-			else {                             	// Se a fonte CC1 não está fornecendo tensão,
-				StrEstFonteCC1 = "Desligada";  	// Carrega a mensagem de que a fonte CC1 está desligada
+			else {                             	     // Se a fonte CC1 não está fornecendo tensão,
+				StrEstFonteCC1 = "Desligada";  	     // Carrega a mensagem de que a fonte CC1 está desligada
 			}
-			if (FonteCC2Ligada) {      	// e se a fonte CC2 está fornecendo tensão,
-				StrEstFonteCC2 = "Ligada";     	// Carrega a mensagem de que a fonte CC1 está ligada
+			if (FonteCC2Ligada) {      	             // e se a fonte CC2 está fornecendo tensão,
+				StrEstFonteCC2 = "Ligada";     	     // Carrega a mensagem de que a fonte CC1 está ligada
 			}
-			else {                             	// Se a fonte CC1 não está fornecendo tensão,
-				StrEstFonteCC2 = "Desligada";  	// Carrega a mensagem de que a fonte CC1 está desligada
+			else {                             	     // Se a fonte CC1 não está fornecendo tensão,
+				StrEstFonteCC2 = "Desligada";  	     // Carrega a mensagem de que a fonte CC1 está desligada
 			}
 		}
-		else {                                 	// Se falta CA,
-			if (FonteCC1Ligada) {      	// e se a saida da fonte está sem tensao,
-				StrEstFonteCC1 = "Falta CA";   	// Carrega a mensagem de que Falta CA
+		else {                                 	     // Se falta CA,
+			if (FonteCC1Ligada) {            	     // e se a saida da fonte está sem tensao,
+				StrEstFonteCC1 = "Falta CA";   	     // Carrega a mensagem de que Falta CA
 			}
 			else {
-				StrEstFonteCC1 = "Falha";      	// Carrega a mensagem de Falha
+				StrEstFonteCC1 = "Falha";      	     // Carrega a mensagem de Falha
 			}
-			if (FonteCC2Ligada) {      	// e se a saida da fonte está sem tensao,
-				StrEstFonteCC2 = "Falta CA";   	// Carrega a mensagem de que Falta CA
+			if (FonteCC2Ligada) {      	             // e se a saida da fonte está sem tensao,
+				StrEstFonteCC2 = "Falta CA";   	     // Carrega a mensagem de que Falta CA
 			}
 			else {
-				StrEstFonteCC2 = "Falha";      	// Carrega a mensagem de Falha
+				StrEstFonteCC2 = "Falha";      	     // Carrega a mensagem de Falha
 			}
 		}
 		
